@@ -24,6 +24,8 @@ export class ProjectStagesBoardComponent implements OnInit {
 
   project = signal<Project | null>(null);
   stages = signal<ProjectStage[]>([]);
+  viewMode = signal<'LIST' | 'KANBAN'>('LIST');
+  statusFilter = signal<'ALL' | 'PENDING' | 'IN_PROGRESS' | 'COMPLETED'>('ALL');
   isLoading = signal(true);
   isSubmittingStage = signal(false);
 
@@ -115,5 +117,35 @@ export class ProjectStagesBoardComponent implements OnInit {
 
   toggleCompletion(stage: ProjectStage) {
     this.updateProgress(stage, stage.isCompleted ? 0 : 100);
+  }
+
+  getStageStatus(stage: ProjectStage): 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' {
+    if (stage.isCompleted || stage.progress >= 100) {
+      return 'COMPLETED';
+    }
+    if (stage.progress > 0) {
+      return 'IN_PROGRESS';
+    }
+    return 'PENDING';
+  }
+
+  get filteredStages(): ProjectStage[] {
+    const filter = this.statusFilter();
+    if (filter === 'ALL') {
+      return this.stages();
+    }
+    return this.stages().filter((stage) => this.getStageStatus(stage) === filter);
+  }
+
+  get pendingStages(): ProjectStage[] {
+    return this.filteredStages.filter((stage) => this.getStageStatus(stage) === 'PENDING');
+  }
+
+  get inProgressStages(): ProjectStage[] {
+    return this.filteredStages.filter((stage) => this.getStageStatus(stage) === 'IN_PROGRESS');
+  }
+
+  get completedStages(): ProjectStage[] {
+    return this.filteredStages.filter((stage) => this.getStageStatus(stage) === 'COMPLETED');
   }
 }

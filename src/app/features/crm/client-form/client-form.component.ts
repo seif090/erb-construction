@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { ClientAttachment, ClientService, Client } from '../../../core/services/client.service';
-import { LucideAngularModule, X, Save, User, Mail, Phone, MapPin, DollarSign, Paperclip, Plus, Trash2, Link2 } from 'lucide-angular';
+import { LucideAngularModule, X, Save, User, Mail, Phone, MapPin, DollarSign, Paperclip, Plus, Trash2, Link2, Eye } from 'lucide-angular';
 
 @Component({
   selector: 'app-client-form',
@@ -37,6 +37,7 @@ export class ClientFormComponent {
   isUploadingAttachment = signal(false);
   selectedAttachmentFile = signal<File | null>(null);
   attachments = signal<ClientAttachment[]>([]);
+  previewAttachment = signal<ClientAttachment | null>(null);
 
   readonly X = X;
   readonly Save = Save;
@@ -49,6 +50,7 @@ export class ClientFormComponent {
   readonly Plus = Plus;
   readonly Trash2 = Trash2;
   readonly Link2 = Link2;
+  readonly Eye = Eye;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { client?: Client }) {
     this.isEdit = !!data?.client;
@@ -173,13 +175,39 @@ export class ClientFormComponent {
     this.clientService.deleteClientAttachment(this.data.client.id, attachmentId).subscribe({
       next: (res) => {
         if (res.success) {
-          this.attachments.set(this.attachments().filter((item) => item.id !== attachmentId));
+          const updated = this.attachments().filter((item) => item.id !== attachmentId);
+          this.attachments.set(updated);
+          if (this.previewAttachment()?.id === attachmentId) {
+            this.previewAttachment.set(updated[0] || null);
+          }
         }
       },
       error: (err) => {
         console.error('Error deleting attachment:', err);
       },
     });
+  }
+
+  openPreview(item: ClientAttachment) {
+    this.previewAttachment.set(item);
+  }
+
+  clearPreview() {
+    this.previewAttachment.set(null);
+  }
+
+  isImageAttachment(item: ClientAttachment): boolean {
+    if (item.mimeType?.startsWith('image/')) {
+      return true;
+    }
+    return /\.(png|jpg|jpeg|webp|gif)$/i.test(item.url);
+  }
+
+  isPdfAttachment(item: ClientAttachment): boolean {
+    if (item.mimeType === 'application/pdf') {
+      return true;
+    }
+    return /\.pdf$/i.test(item.url);
   }
 }
 

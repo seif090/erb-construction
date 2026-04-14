@@ -15,6 +15,27 @@
   </div>
 
   <ng-container *ngIf="!isLoading()">
+    <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <button type="button" (click)="viewMode.set('LIST')" class="px-3 py-1.5 rounded-lg text-xs font-bold" [class.bg-primary]="viewMode() === 'LIST'" [class.text-white]="viewMode() === 'LIST'" [class.bg-slate-100]="viewMode() !== 'LIST'" [class.text-slate-600]="viewMode() !== 'LIST'">
+          List
+        </button>
+        <button type="button" (click)="viewMode.set('KANBAN')" class="px-3 py-1.5 rounded-lg text-xs font-bold" [class.bg-primary]="viewMode() === 'KANBAN'" [class.text-white]="viewMode() === 'KANBAN'" [class.bg-slate-100]="viewMode() !== 'KANBAN'" [class.text-slate-600]="viewMode() !== 'KANBAN'">
+          Kanban
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-500">فلترة</span>
+        <select [value]="statusFilter()" (change)="statusFilter.set($any($event.target).value)" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-1.5 text-xs">
+          <option value="ALL">الكل</option>
+          <option value="PENDING">Pending</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="COMPLETED">Completed</option>
+        </select>
+      </div>
+    </div>
+
     <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <div class="flex items-center gap-2 mb-3">
         <lucide-icon [img]="Plus" [size]="14"></lucide-icon>
@@ -29,8 +50,8 @@
       </form>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div *ngFor="let stage of stages()" class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+    <div *ngIf="viewMode() === 'LIST'" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div *ngFor="let stage of filteredStages" class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
         <div class="flex items-center justify-between mb-3">
           <div>
             <p class="font-bold text-slate-800 dark:text-white">{{ stage.order }}. {{ stage.name }}</p>
@@ -52,7 +73,39 @@
       </div>
     </div>
 
-    <div *ngIf="stages().length === 0" class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center text-slate-400">
+    <div *ngIf="viewMode() === 'KANBAN'" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3">
+        <p class="text-xs font-bold text-slate-500 mb-2">Pending</p>
+        <div class="space-y-2">
+          <div *ngFor="let stage of pendingStages" class="rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2">
+            <p class="text-sm font-semibold">{{ stage.order }}. {{ stage.name }}</p>
+            <p class="text-xs text-slate-400">{{ stage.progress }}%</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3">
+        <p class="text-xs font-bold text-slate-500 mb-2">In Progress</p>
+        <div class="space-y-2">
+          <div *ngFor="let stage of inProgressStages" class="rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2">
+            <p class="text-sm font-semibold">{{ stage.order }}. {{ stage.name }}</p>
+            <p class="text-xs text-slate-400">{{ stage.progress }}%</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3">
+        <p class="text-xs font-bold text-slate-500 mb-2">Completed</p>
+        <div class="space-y-2">
+          <div *ngFor="let stage of completedStages" class="rounded-xl border border-emerald-200 dark:border-emerald-700 px-3 py-2 bg-emerald-50/60 dark:bg-emerald-900/10">
+            <p class="text-sm font-semibold">{{ stage.order }}. {{ stage.name }}</p>
+            <p class="text-xs text-slate-400">{{ stage.progress }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredStages.length === 0" class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center text-slate-400">
       <lucide-icon [img]="ListTodo" [size]="28" class="mx-auto mb-2"></lucide-icon>
       لا توجد مراحل للمشروع حتى الآن.
     </div>
