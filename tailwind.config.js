@@ -26,6 +26,7 @@ module.exports = {
       fontFamily: {
         arabic: ['Cairo', 'Tajawal', 'sans-serif'],
         english: ['Inter', 'sans-serif'],
+        sans: ['Cairo', 'Inter', 'sans-serif'],
       },
     },
   },
