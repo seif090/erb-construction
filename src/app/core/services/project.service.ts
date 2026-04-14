@@ -12,10 +12,35 @@ export interface Project {
   location?: string;
   startDate?: string;
   endDate?: string;
+  progress?: number;
   clientId: string;
   client?: { name: string };
+  stages?: ProjectStage[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ProjectStage {
+  id: string;
+  name: string;
+  nameAr?: string;
+  description?: string;
+  order: number;
+  progress: number;
+  isCompleted: boolean;
+  startDate?: string;
+  endDate?: string;
+  budget?: number;
+}
+
+export interface CreateProjectStageDto {
+  name: string;
+  nameAr?: string;
+  description?: string;
+  order: number;
+  startDate?: string;
+  endDate?: string;
+  budget?: number;
 }
 
 @Injectable({
@@ -30,6 +55,14 @@ export class ProjectService extends BaseApiService {
 
   getProjectById(id: string): Observable<ApiResponse<Project>> {
     return this.get<Project>(`${this.endpoint}/${id}`);
+  }
+
+  addProjectStage(projectId: string, data: CreateProjectStageDto): Observable<ApiResponse<ProjectStage>> {
+    return this.post<ProjectStage>(`${this.endpoint}/${projectId}/stages`, data);
+  }
+
+  updateProjectStage(projectId: string, stageId: string, data: Partial<ProjectStage>): Observable<ApiResponse<ProjectStage>> {
+    return this.patch<ProjectStage>(`${this.endpoint}/${projectId}/stages/${stageId}`, data);
   }
 
   createProject(data: Partial<Project>): Observable<ApiResponse<Project>> {

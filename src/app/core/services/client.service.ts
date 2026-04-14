@@ -19,6 +19,22 @@ export interface Client {
   };
 }
 
+export interface ClientAttachment {
+  id: string;
+  name: string;
+  url: string;
+  mimeType?: string;
+  size?: number;
+  createdAt: string;
+}
+
+export interface CreateClientAttachmentDto {
+  name: string;
+  url: string;
+  mimeType?: string;
+  size?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -47,5 +63,17 @@ export class ClientService extends BaseApiService {
 
   getPipelineData(): Observable<ApiResponse<any>> {
     return this.get<any>(`${this.endpoint}/pipeline`);
+  }
+
+  getClientAttachments(clientId: string): Observable<ApiResponse<ClientAttachment[]>> {
+    return this.get<ClientAttachment[]>(`${this.endpoint}/${clientId}/attachments`);
+  }
+
+  addClientAttachment(clientId: string, data: CreateClientAttachmentDto): Observable<ApiResponse<ClientAttachment>> {
+    return this.post<ClientAttachment>(`${this.endpoint}/${clientId}/attachments`, data);
+  }
+
+  deleteClientAttachment(clientId: string, attachmentId: string): Observable<ApiResponse<null>> {
+    return this.delete<null>(`${this.endpoint}/${clientId}/attachments/${attachmentId}`);
   }
 }

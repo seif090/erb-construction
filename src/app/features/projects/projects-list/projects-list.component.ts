@@ -21,6 +21,7 @@ export class ProjectsListComponent implements OnInit {
   filteredProjects = signal<Project[]>([]);
   isLoading = signal(true);
   searchQuery = signal('');
+  statusFilter = signal<'ALL' | Project['status']>('ALL');
 
   readonly Search = Search;
   readonly FolderPlus = FolderPlus;
@@ -99,8 +100,10 @@ export class ProjectsListComponent implements OnInit {
 
   applyFilter() {
     const query = this.searchQuery().toLowerCase();
+    const status = this.statusFilter();
     if (!query) {
-      this.filteredProjects.set(this.projects());
+      const base = this.projects();
+      this.filteredProjects.set(status === 'ALL' ? base : base.filter((p) => p.status === status));
       return;
     }
     const filtered = this.projects().filter(p => 
@@ -108,11 +111,17 @@ export class ProjectsListComponent implements OnInit {
       p.client?.name?.toLowerCase().includes(query) ||
       p.location?.toLowerCase().includes(query)
     );
-    this.filteredProjects.set(filtered);
+    this.filteredProjects.set(status === 'ALL' ? filtered : filtered.filter((p) => p.status === status));
   }
 
   onSearchChange(event: any) {
     this.searchQuery.set(event.target.value);
+    this.applyFilter();
+  }
+
+  onStatusFilterChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value as 'ALL' | Project['status'];
+    this.statusFilter.set(value);
     this.applyFilter();
   }
 
@@ -139,7 +148,13 @@ export class ProjectsListComponent implements OnInit {
   }
 
   getProgress(p: Project): number {
-    return (p.spent / p.budget) * 100;
+    if (typeof p.progress === 'number') {
+      return p.progress;
+    }
+    if (!p.budget || p.budget <= 0) {
+      return 0;
+    }
+    return Math.max(0, Math.min(100, (p.spent / p.budget) * 100));
   }
 }
 

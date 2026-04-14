@@ -30,11 +30,13 @@
 
     <div class="flex items-center gap-2 text-sm text-slate-500">
       <span>تصفية حسب:</span>
-      <select class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-3 text-xs focus:ring-primary focus:border-primary outline-none">
-        <option>الكل</option>
-        <option>قيد التنفيذ</option>
-        <option>قيد الانتظار</option>
-        <option>مكتمل</option>
+      <select (change)="onStatusFilterChange($event)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-3 text-xs focus:ring-primary focus:border-primary outline-none">
+        <option value="ALL">الكل</option>
+        <option value="IN_PROGRESS">قيد التنفيذ</option>
+        <option value="PENDING">قيد الانتظار</option>
+        <option value="ON_HOLD">متوقف مؤقتاً</option>
+        <option value="COMPLETED">مكتمل</option>
+        <option value="CANCELLED">ملغي</option>
       </select>
     </div>
   </div>

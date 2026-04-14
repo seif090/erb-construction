@@ -149,6 +149,46 @@
       </div>
     </div>
 
+    <div *ngIf="isEdit" class="pt-4 border-t border-slate-100 dark:border-slate-800">
+      <div class="flex items-center gap-2 mb-3">
+        <lucide-icon [img]="ListTodo" [size]="16" class="text-primary"></lucide-icon>
+        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200">مراحل المشروع / Project Stages</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3" [formGroup]="stageForm">
+        <input formControlName="name" type="text" class="md:col-span-2 block w-full text-sm rounded-xl border-0 py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary" placeholder="اسم المرحلة">
+        <input formControlName="order" type="number" min="1" class="block w-full text-sm rounded-xl border-0 py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary" placeholder="الترتيب">
+        <input formControlName="budget" type="number" class="block w-full text-sm rounded-xl border-0 py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary" placeholder="ميزانية المرحلة">
+      </div>
+
+      <button type="button" (click)="addStage()" [disabled]="isStageSubmitting()" class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-60">
+        <lucide-icon [img]="Plus" [size]="14"></lucide-icon>
+        <span *ngIf="!isStageSubmitting()">إضافة مرحلة</span>
+        <span *ngIf="isStageSubmitting()">جاري الإضافة...</span>
+      </button>
+
+      <div class="space-y-2" *ngIf="stages().length > 0; else noStages">
+        <div *ngFor="let stage of stages()" class="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2">
+          <div class="flex items-center gap-3">
+            <button type="button" (click)="toggleStageCompletion(stage)" class="p-1.5 rounded-lg" [class.text-green-600]="stage.isCompleted" [class.text-slate-400]="!stage.isCompleted">
+              <lucide-icon [img]="CheckCircle2" [size]="16"></lucide-icon>
+            </button>
+            <div>
+              <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ stage.order }}. {{ stage.name }}</p>
+              <p class="text-xs text-slate-400">{{ stage.progress }}%</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-1 rounded-full" [class.bg-green-100]="stage.isCompleted" [class.text-green-700]="stage.isCompleted" [class.bg-slate-100]="!stage.isCompleted" [class.text-slate-500]="!stage.isCompleted">
+            {{ stage.isCompleted ? 'Completed' : 'Pending' }}
+          </span>
+        </div>
+      </div>
+
+      <ng-template #noStages>
+        <p class="text-xs text-slate-400">لا توجد مراحل بعد لهذا المشروع.</p>
+      </ng-template>
+    </div>
+
     <!-- Actions -->
     <div class="pt-6 flex items-center justify-end gap-3 border-t border-slate-50 dark:border-slate-800">
       <button type="button" (click)="close()" 

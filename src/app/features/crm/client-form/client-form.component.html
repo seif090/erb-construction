@@ -105,6 +105,40 @@
       </div>
     </div>
 
+    <div class="pt-2 border-t border-slate-100 dark:border-slate-800" *ngIf="isEdit">
+      <div class="flex items-center gap-2 mb-3">
+        <lucide-icon [img]="Paperclip" [size]="16" class="text-primary"></lucide-icon>
+        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200">مرفقات العميل / Attachments</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3" [formGroup]="attachmentForm">
+        <input formControlName="name" type="text" class="block w-full text-sm rounded-xl border-0 py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary" placeholder="اسم الملف">
+        <input formControlName="url" type="url" class="block w-full text-sm rounded-xl border-0 py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary" placeholder="https://...">
+      </div>
+
+      <button type="button" (click)="addAttachment()" [disabled]="isUploadingAttachment()" class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-60">
+        <lucide-icon [img]="Plus" [size]="14"></lucide-icon>
+        <span *ngIf="!isUploadingAttachment()">إضافة مرفق</span>
+        <span *ngIf="isUploadingAttachment()">جاري الإضافة...</span>
+      </button>
+
+      <div class="space-y-2" *ngIf="attachments().length > 0; else noAttachments">
+        <div *ngFor="let item of attachments()" class="flex items-center justify-between gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2">
+          <a [href]="item.url" target="_blank" class="inline-flex items-center gap-2 text-xs font-medium text-primary hover:underline">
+            <lucide-icon [img]="Link2" [size]="14"></lucide-icon>
+            {{ item.name }}
+          </a>
+          <button type="button" (click)="removeAttachment(item.id)" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
+            <lucide-icon [img]="Trash2" [size]="14"></lucide-icon>
+          </button>
+        </div>
+      </div>
+
+      <ng-template #noAttachments>
+        <p class="text-xs text-slate-400">لا توجد مرفقات بعد.</p>
+      </ng-template>
+    </div>
+
     <!-- Actions -->
     <div class="pt-6 flex items-center justify-end gap-3 border-t border-slate-50 dark:border-slate-800">
       <button type="button" (click)="close()" 
