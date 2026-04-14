@@ -1,9 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LucideAngularModule, Wallet, TrendingUp, TrendingDown, DollarSign, Plus, ArrowUpRight, ArrowDownRight, Search, FileText, MoreVertical, Calendar } from 'lucide-angular';
-import { AccountingService, Transaction, AccountingSummary } from '../../../../core/services/accounting.service';
+import { AccountingService, Transaction, AccountingSummary } from '../../../core/services/accounting.service';
 import { TransactionFormComponent } from '../transaction-form/transaction-form.component';
 
 @Component({
@@ -63,10 +63,10 @@ export class AccountingComponent implements OnInit {
         console.error('Error fetching transactions:', err);
         // Fallback mock data
         const mockData: Transaction[] = [
-          { id: '1', type: 'INCOME', amount: 45000, description: 'دفعة عقد - مشروع فيلا الياسمين', category: 'Sales', date: new Date().toISOString(), createdAt: '' },
-          { id: '2', type: 'EXPENSE', amount: 1200, description: 'شراء مواد سباكة - مخزن أ', category: 'Materials', date: new Date().toISOString(), createdAt: '' },
-          { id: '3', type: 'INCOME', amount: 25000, description: 'قسط بيع وحدة 101', category: 'Real Estate', date: new Date().toISOString(), createdAt: '' },
-          { id: '4', type: 'EXPENSE', amount: 3500, description: 'أجور عمال كهرباء', category: 'Labor', date: new Date().toISOString(), createdAt: '' },
+          { id: '1', type: 'INCOME', amount: 45000, description: 'Ø¯ÙØ¹Ø© Ø¹Ù‚Ø¯ - Ù…Ø´Ø±ÙˆØ¹ ÙÙŠÙ„Ø§ Ø§Ù„ÙŠØ§Ø³Ù…ÙŠÙ†', category: 'Sales', date: new Date().toISOString(), createdAt: '' },
+          { id: '2', type: 'EXPENSE', amount: 1200, description: 'Ø´Ø±Ø§Ø¡ Ù…ÙˆØ§Ø¯ Ø³Ø¨Ø§ÙƒØ© - Ù…Ø®Ø²Ù† Ø£', category: 'Materials', date: new Date().toISOString(), createdAt: '' },
+          { id: '3', type: 'INCOME', amount: 25000, description: 'Ù‚Ø³Ø· Ø¨ÙŠØ¹ ÙˆØ­Ø¯Ø© 101', category: 'Real Estate', date: new Date().toISOString(), createdAt: '' },
+          { id: '4', type: 'EXPENSE', amount: 3500, description: 'Ø£Ø¬ÙˆØ± Ø¹Ù…Ø§Ù„ ÙƒÙ‡Ø±Ø¨Ø§Ø¡', category: 'Labor', date: new Date().toISOString(), createdAt: '' },
         ];
         this.transactions.set(mockData);
         this.applyFilter();
@@ -107,3 +107,4 @@ export class AccountingComponent implements OnInit {
     this.applyFilter();
   }
 }
+

@@ -1,10 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { UnitService, Unit } from '../../../../core/services/unit.service';
+import { UnitService, Unit } from '../../../core/services/unit.service';
 import { UnitFormComponent } from '../unit-form/unit-form.component';
-import { LucideAngularModule, Search, Building, MapPin, Bed, Bath, Move, MoreVertical, Plus } from 'lucide-angular';
+import { LucideAngularModule, Search, Building, MapPin, Bed, Bath, Move, MoreVertical, Plus, Home } from 'lucide-angular';
 
 @Component({
   selector: 'app-units-list',
@@ -30,6 +30,7 @@ export class UnitsListComponent implements OnInit {
   readonly Move = Move;
   readonly MoreVertical = MoreVertical;
   readonly Plus = Plus;
+  readonly Home = Home;
 
   ngOnInit() {
     this.fetchUnits();
@@ -51,27 +52,27 @@ export class UnitsListComponent implements OnInit {
         const mockData: Unit[] = [
           { 
             id: '1', 
-            name: 'شقة فاخرة في الياسمين', 
+            name: 'Ø´Ù‚Ø© ÙØ§Ø®Ø±Ø© ÙÙŠ Ø§Ù„ÙŠØ§Ø³Ù…ÙŠÙ†', 
             type: 'APARTMENT', 
             price: 4500000, 
             area: 180, 
             rooms: 3, 
             baths: 2, 
             status: 'AVAILABLE', 
-            location: 'القاهرة، التجمع الخامس',
+            location: 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©ØŒ Ø§Ù„ØªØ¬Ù…Ø¹ Ø§Ù„Ø®Ø§Ù…Ø³',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
           { 
             id: '2', 
-            name: 'فيلا مودرن مع مسبح', 
+            name: 'ÙÙŠÙ„Ø§ Ù…ÙˆØ¯Ø±Ù† Ù…Ø¹ Ù…Ø³Ø¨Ø­', 
             type: 'VILLA', 
             price: 12000000, 
             area: 450, 
             rooms: 5, 
             baths: 4, 
             status: 'RESERVED', 
-            location: 'الرياض، حي الملقا',
+            location: 'Ø§Ù„Ø±ÙŠØ§Ø¶ØŒ Ø­ÙŠ Ø§Ù„Ù…Ù„Ù‚Ø§',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
@@ -127,22 +128,23 @@ export class UnitsListComponent implements OnInit {
 
   getStatusLabel(status: string) {
     switch (status) {
-      case 'AVAILABLE': return 'متاح';
-      case 'SOLD': return 'مباع';
-      case 'RENTED': return 'مؤجر';
-      case 'RESERVED': return 'محجوز';
+      case 'AVAILABLE': return 'Ù…ØªØ§Ø­';
+      case 'SOLD': return 'Ù…Ø¨Ø§Ø¹';
+      case 'RENTED': return 'Ù…Ø¤Ø¬Ø±';
+      case 'RESERVED': return 'Ù…Ø­Ø¬ÙˆØ²';
       default: return status;
     }
   }
 
   getTypeLabel(type: string) {
     switch (type) {
-      case 'APARTMENT': return 'شقة';
-      case 'VILLA': return 'فيلا';
-      case 'STUDIO': return 'استوديو';
-      case 'OFFICE': return 'مكتب';
-      case 'LAND': return 'أرض';
+      case 'APARTMENT': return 'Ø´Ù‚Ø©';
+      case 'VILLA': return 'ÙÙŠÙ„Ø§';
+      case 'STUDIO': return 'Ø§Ø³ØªÙˆØ¯ÙŠÙˆ';
+      case 'OFFICE': return 'Ù…ÙƒØªØ¨';
+      case 'LAND': return 'Ø£Ø±Ø¶';
       default: return type;
     }
   }
 }
+

@@ -1,4 +1,4 @@
-import { Component, Inject, inject, signal } from '@angular/core';
+﻿import { Component, Inject, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -8,8 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { ProjectService, Project } from '../../../../core/services/project.service';
-import { ClientService, Client } from '../../../../core/services/client.service';
+import { ProjectService, Project } from '../../../core/services/project.service';
+import { ClientService, Client } from '../../../core/services/client.service';
 import { LucideAngularModule, X, Save, Folder, User, Calendar, DollarSign, MapPin, ClipboardList } from 'lucide-angular';
 
 @Component({
@@ -100,3 +100,4 @@ export class ProjectFormComponent {
     this.dialogRef.close();
   }
 }
+

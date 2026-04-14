@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { InventoryService, InventoryItem } from '../../../../core/services/inventory.service';
+import { InventoryService, InventoryItem } from '../../../core/services/inventory.service';
 import { InventoryFormComponent } from '../inventory-form/inventory-form.component';
 import { LucideAngularModule, Search, Box, AlertTriangle, ArrowUpDown, MoreVertical, Plus, Package } from 'lucide-angular';
 
@@ -48,9 +48,9 @@ export class InventoryListComponent implements OnInit {
         console.error('Error fetching inventory:', err);
         // Fallback mock data
         const mockData: InventoryItem[] = [
-          { id: '1', name: 'أسمنت بورتلاندي', category: 'مواد بناء', quantity: 50, minQuantity: 100, unit: 'TON', unitCost: 4500, location: 'مخزن أ', createdAt: '', updatedAt: '' },
-          { id: '2', name: 'دهان جوتن أبيض', category: 'دهانات', quantity: 150, minQuantity: 50, unit: 'LITER', unitCost: 850, location: 'مخزن ب', createdAt: '', updatedAt: '' },
-          { id: '3', name: 'خشب سويدي 2*4', category: 'أخشاب', quantity: 500, minQuantity: 200, unit: 'PIECE', unitCost: 120, location: 'مخزن أ', createdAt: '', updatedAt: '' },
+          { id: '1', name: 'Ø£Ø³Ù…Ù†Øª Ø¨ÙˆØ±ØªÙ„Ø§Ù†Ø¯ÙŠ', category: 'Ù…ÙˆØ§Ø¯ Ø¨Ù†Ø§Ø¡', quantity: 50, minQuantity: 100, unit: 'TON', unitCost: 4500, location: 'Ù…Ø®Ø²Ù† Ø£', createdAt: '', updatedAt: '' },
+          { id: '2', name: 'Ø¯Ù‡Ø§Ù† Ø¬ÙˆØªÙ† Ø£Ø¨ÙŠØ¶', category: 'Ø¯Ù‡Ø§Ù†Ø§Øª', quantity: 150, minQuantity: 50, unit: 'LITER', unitCost: 850, location: 'Ù…Ø®Ø²Ù† Ø¨', createdAt: '', updatedAt: '' },
+          { id: '3', name: 'Ø®Ø´Ø¨ Ø³ÙˆÙŠØ¯ÙŠ 2*4', category: 'Ø£Ø®Ø´Ø§Ø¨', quantity: 500, minQuantity: 200, unit: 'PIECE', unitCost: 120, location: 'Ù…Ø®Ø²Ù† Ø£', createdAt: '', updatedAt: '' },
         ];
         this.items.set(mockData);
         this.applyFilter();
@@ -98,13 +98,14 @@ export class InventoryListComponent implements OnInit {
 
   getUnitLabel(unit: string) {
     switch (unit) {
-      case 'PIECE': return 'قطعة';
-      case 'METER': return 'متر';
-      case 'TON': return 'طن';
-      case 'LITER': return 'لتر';
-      case 'BOX': return 'صندوق';
-      case 'KG': return 'كجم';
+      case 'PIECE': return 'Ù‚Ø·Ø¹Ø©';
+      case 'METER': return 'Ù…ØªØ±';
+      case 'TON': return 'Ø·Ù†';
+      case 'LITER': return 'Ù„ØªØ±';
+      case 'BOX': return 'ØµÙ†Ø¯ÙˆÙ‚';
+      case 'KG': return 'ÙƒØ¬Ù…';
       default: return unit;
     }
   }
 }
+

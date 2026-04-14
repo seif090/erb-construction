@@ -19,11 +19,11 @@
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="flex items-center justify-center py-20">
+  <div *ngIf="isLoading()" class="flex items-center justify-center py-20">
     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
   </div>
 
-  <ng-container *ngIf="!isLoading && stats">
+  <ng-container *ngIf="!isLoading() && stats()">
     <!-- KPI Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       
@@ -32,7 +32,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">إجمالي العملاء</p>
-            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.totalClients }}</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ totalClients }}</p>
           </div>
           <div class="h-12 w-12 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-500 flex items-center justify-center">
             <lucide-icon [img]="Users" [size]="24"></lucide-icon>
@@ -49,7 +49,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">مشاريع نشطة</p>
-            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.activeProjects }}</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ activeProjects }}</p>
           </div>
           <div class="h-12 w-12 rounded-lg bg-primary-light/10 text-primary flex items-center justify-center">
             <lucide-icon [img]="HardHat" [size]="24"></lucide-icon>
@@ -66,7 +66,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">وحدات متاحة</p>
-            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.availableUnits }}</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ availableUnits }}</p>
           </div>
           <div class="h-12 w-12 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center">
             <lucide-icon [img]="Building2" [size]="24"></lucide-icon>
@@ -82,7 +82,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">إيرادات الشهر</p>
-            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.monthlyRevenue | number:'1.0-0' }} <span class="text-sm font-normal text-slate-500">ر.س</span></p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ monthlyRevenue | number:'1.0-0' }} <span class="text-sm font-normal text-slate-500">ر.س</span></p>
           </div>
           <div class="h-12 w-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-500 flex items-center justify-center">
             <lucide-icon [img]="PiggyBank" [size]="24"></lucide-icon>

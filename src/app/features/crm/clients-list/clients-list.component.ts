@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ClientService, Client } from '../../../../core/services/client.service';
+import { ClientService, Client } from '../../../core/services/client.service';
 import { ClientFormComponent } from '../client-form/client-form.component';
 import { LucideAngularModule, Search, UserPlus, Filter, MoreVertical, Mail, Phone, MapPin, Star } from 'lucide-angular';
 
@@ -49,10 +49,10 @@ export class ClientsListComponent implements OnInit {
         console.error('Error fetching clients:', err);
         // Fallback mock data for visual assessment until DB is live
         const mockData: Client[] = [
-          { id: '1', name: 'أحمد علي', email: 'ahmed@example.com', phone: '0123456789', pipeline: 'CLOSED', totalValue: 150000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-          { id: '2', name: 'محمد حسن', email: 'mohammad@example.com', phone: '0112233445', pipeline: 'NEGOTIATION', totalValue: 85000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-          { id: '3', name: 'سارة محمود', email: 'sara@example.com', phone: '0101010101', pipeline: 'LEAD', totalValue: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-          { id: '4', name: 'ياسين كريم', email: 'yassin@example.com', phone: '0151515151', pipeline: 'PROPOSAL', totalValue: 45000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '1', name: 'Ø£Ø­Ù…Ø¯ Ø¹Ù„ÙŠ', email: 'ahmed@example.com', phone: '0123456789', pipeline: 'CLOSED', totalValue: 150000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '2', name: 'Ù…Ø­Ù…Ø¯ Ø­Ø³Ù†', email: 'mohammad@example.com', phone: '0112233445', pipeline: 'NEGOTIATION', totalValue: 85000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '3', name: 'Ø³Ø§Ø±Ø© Ù…Ø­Ù…ÙˆØ¯', email: 'sara@example.com', phone: '0101010101', pipeline: 'LEAD', totalValue: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '4', name: 'ÙŠØ§Ø³ÙŠÙ† ÙƒØ±ÙŠÙ…', email: 'yassin@example.com', phone: '0151515151', pipeline: 'PROPOSAL', totalValue: 45000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
         ];
         this.clients.set(mockData);
         this.applyFilter();
@@ -107,12 +107,13 @@ export class ClientsListComponent implements OnInit {
 
   getPipelineLabel(stage: string) {
     switch (stage) {
-      case 'CLOSED': return 'مكتمل / Closed';
-      case 'LEAD': return 'عميل محتمل / Lead';
-      case 'NEGOTIATION': return 'تفاوض / Negotiation';
-      case 'PROPOSAL': return 'عرض سعر / Proposal';
-      case 'LOST': return 'مفقود / Lost';
+      case 'CLOSED': return 'Ù…ÙƒØªÙ…Ù„ / Closed';
+      case 'LEAD': return 'Ø¹Ù…ÙŠÙ„ Ù…Ø­ØªÙ…Ù„ / Lead';
+      case 'NEGOTIATION': return 'ØªÙØ§ÙˆØ¶ / Negotiation';
+      case 'PROPOSAL': return 'Ø¹Ø±Ø¶ Ø³Ø¹Ø± / Proposal';
+      case 'LOST': return 'Ù…ÙÙ‚ÙˆØ¯ / Lost';
       default: return stage;
     }
   }
 }
+

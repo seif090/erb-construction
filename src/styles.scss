@@ -54,7 +54,7 @@
 
 /* Material overrides for cleaner look */
 .mat-mdc-text-field-wrapper {
-  @apply rounded-lg !important;
+  @apply rounded-lg;
 }
 
 /* Custom scrollbar */

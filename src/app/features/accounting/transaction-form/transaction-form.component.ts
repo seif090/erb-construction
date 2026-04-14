@@ -1,4 +1,4 @@
-import { Component, Inject, inject, signal } from '@angular/core';
+﻿import { Component, Inject, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -6,8 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { AccountingService, Transaction } from '../../../../core/services/accounting.service';
-import { ProjectService, Project } from '../../../../core/services/project.service';
+import { AccountingService, Transaction } from '../../../core/services/accounting.service';
+import { ProjectService, Project } from '../../../core/services/project.service';
 import { LucideAngularModule, X, Save, DollarSign, FileText, Calendar, Tag, Folder } from 'lucide-angular';
 
 @Component({
@@ -93,3 +93,4 @@ export class TransactionFormComponent {
     this.dialogRef.close();
   }
 }
+

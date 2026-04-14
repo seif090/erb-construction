@@ -8,6 +8,7 @@ export interface Client {
   email: string;
   phone: string;
   address?: string;
+  rating?: number;
   pipeline: 'LEAD' | 'NEGOTIATION' | 'PROPOSAL' | 'CLOSED' | 'LOST';
   totalValue?: number;
   createdAt: string;

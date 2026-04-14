@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ProjectService, Project } from '../../../../core/services/project.service';
+import { ProjectService, Project } from '../../../core/services/project.service';
 import { ProjectFormComponent } from '../project-form/project-form.component';
 import { LucideAngularModule, Search, FolderPlus, MapPin, Calendar, Clock, MoreVertical, TrendingUp, CheckCircle2 } from 'lucide-angular';
 
@@ -51,27 +51,27 @@ export class ProjectsListComponent implements OnInit {
         const mockData: Project[] = [
           { 
             id: '1', 
-            name: 'تشطيب فيلا الياسمين', 
+            name: 'ØªØ´Ø·ÙŠØ¨ ÙÙŠÙ„Ø§ Ø§Ù„ÙŠØ§Ø³Ù…ÙŠÙ†', 
             budget: 250000, 
             spent: 120000, 
             status: 'IN_PROGRESS', 
-            location: 'التجمع الخامس، القاهرة',
+            location: 'Ø§Ù„ØªØ¬Ù…Ø¹ Ø§Ù„Ø®Ø§Ù…Ø³ØŒ Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©',
             startDate: '2023-10-01',
             clientId: '1',
-            client: { name: 'أحمد علي' },
+            client: { name: 'Ø£Ø­Ù…Ø¯ Ø¹Ù„ÙŠ' },
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
           { 
             id: '2', 
-            name: 'ديكور شقة الرحاب', 
+            name: 'Ø¯ÙŠÙƒÙˆØ± Ø´Ù‚Ø© Ø§Ù„Ø±Ø­Ø§Ø¨', 
             budget: 120000, 
             spent: 120000, 
             status: 'COMPLETED', 
-            location: 'الرحاب، القاهرة',
+            location: 'Ø§Ù„Ø±Ø­Ø§Ø¨ØŒ Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©',
             startDate: '2023-08-15',
             clientId: '2',
-            client: { name: 'محمد حسن' },
+            client: { name: 'Ù…Ø­Ù…Ø¯ Ø­Ø³Ù†' },
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
@@ -129,11 +129,11 @@ export class ProjectsListComponent implements OnInit {
 
   getStatusLabel(status: string) {
     switch (status) {
-      case 'IN_PROGRESS': return 'قيد التنفيذ';
-      case 'COMPLETED': return 'مكتمل';
-      case 'PENDING': return 'قيد الانتظار';
-      case 'ON_HOLD': return 'متوقف مؤقتاً';
-      case 'CANCELLED': return 'ملغي';
+      case 'IN_PROGRESS': return 'Ù‚ÙŠØ¯ Ø§Ù„ØªÙ†ÙÙŠØ°';
+      case 'COMPLETED': return 'Ù…ÙƒØªÙ…Ù„';
+      case 'PENDING': return 'Ù‚ÙŠØ¯ Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø±';
+      case 'ON_HOLD': return 'Ù…ØªÙˆÙ‚Ù Ù…Ø¤Ù‚ØªØ§Ù‹';
+      case 'CANCELLED': return 'Ù…Ù„ØºÙŠ';
       default: return status;
     }
   }
@@ -142,3 +142,4 @@ export class ProjectsListComponent implements OnInit {
     return (p.spent / p.budget) * 100;
   }
 }
+

@@ -1,4 +1,4 @@
-import { Component, Inject, inject, signal } from '@angular/core';
+﻿import { Component, Inject, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { InventoryService, InventoryItem } from '../../../../core/services/inventory.service';
+import { InventoryService, InventoryItem } from '../../../core/services/inventory.service';
 import { LucideAngularModule, X, Save, Package, Tag, Move, DollarSign, MapPin, ClipboardList } from 'lucide-angular';
 
 @Component({
@@ -47,7 +47,7 @@ export class InventoryFormComponent {
     this.isEdit = !!data?.item;
     this.inventoryForm = this.fb.group({
       name: [data?.item?.name || '', [Validators.required]],
-      category: [data?.item?.category || 'مواد بناء', [Validators.required]],
+      category: [data?.item?.category || 'Ù…ÙˆØ§Ø¯ Ø¨Ù†Ø§Ø¡', [Validators.required]],
       unit: [data?.item?.unit || 'PIECE', [Validators.required]],
       quantity: [data?.item?.quantity || 0, [Validators.required, Validators.min(0)]],
       minQuantity: [data?.item?.minQuantity || 0],
@@ -81,3 +81,4 @@ export class InventoryFormComponent {
     this.dialogRef.close();
   }
 }
+

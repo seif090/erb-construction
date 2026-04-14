@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ContractorService, Contractor } from '../../../../core/services/contractor.service';
+import { ContractorService, Contractor } from '../../../core/services/contractor.service';
 import { ContractorFormComponent } from '../contractor-form/contractor-form.component';
 import { LucideAngularModule, Search, HardHat, Phone, Mail, Star, MoreVertical, Plus, Briefcase } from 'lucide-angular';
 
@@ -49,10 +49,10 @@ export class ContractorsListComponent implements OnInit {
         console.error('Error fetching contractors:', err);
         // Fallback mock data
         const mockData: Contractor[] = [
-          { id: '1', name: 'يوسف ابراهيم', specialty: 'ELECTRICIAN', specialties: [], phone: '0101234567', email: 'youssef@electric.com', rating: 5, isActive: true, totalProjects: 12, createdAt: '', updatedAt: '' },
-          { id: '2', name: 'خالد ممدوح', specialty: 'PLUMBER', specialties: [], phone: '0119876543', email: 'khaled@plumbing.com', rating: 4, isActive: true, totalProjects: 8, createdAt: '', updatedAt: '' },
-          { id: '3', name: 'سناء محمود', specialty: 'DESIGNER', specialties: [], phone: '0123344556', email: 'sanaa@design.com', rating: 5, isActive: true, totalProjects: 5, createdAt: '', updatedAt: '' },
-          { id: '4', name: 'محمود علي', specialty: 'PAINTER', specialties: [], phone: '0156677889', email: 'mahmoud@paint.com', rating: 3, isActive: false, totalProjects: 20, createdAt: '', updatedAt: '' },
+          { id: '1', name: 'ÙŠÙˆØ³Ù Ø§Ø¨Ø±Ø§Ù‡ÙŠÙ…', specialty: 'ELECTRICIAN', specialties: [], phone: '0101234567', email: 'youssef@electric.com', rating: 5, isActive: true, totalProjects: 12, createdAt: '', updatedAt: '' },
+          { id: '2', name: 'Ø®Ø§Ù„Ø¯ Ù…Ù…Ø¯ÙˆØ­', specialty: 'PLUMBER', specialties: [], phone: '0119876543', email: 'khaled@plumbing.com', rating: 4, isActive: true, totalProjects: 8, createdAt: '', updatedAt: '' },
+          { id: '3', name: 'Ø³Ù†Ø§Ø¡ Ù…Ø­Ù…ÙˆØ¯', specialty: 'DESIGNER', specialties: [], phone: '0123344556', email: 'sanaa@design.com', rating: 5, isActive: true, totalProjects: 5, createdAt: '', updatedAt: '' },
+          { id: '4', name: 'Ù…Ø­Ù…ÙˆØ¯ Ø¹Ù„ÙŠ', specialty: 'PAINTER', specialties: [], phone: '0156677889', email: 'mahmoud@paint.com', rating: 3, isActive: false, totalProjects: 20, createdAt: '', updatedAt: '' },
         ];
         this.contractors.set(mockData);
         this.applyFilter();
@@ -95,13 +95,13 @@ export class ContractorsListComponent implements OnInit {
 
   getTradeLabel(specialty: string) {
     switch (specialty) {
-      case 'ELECTRICIAN': return 'كهربائي';
-      case 'PLUMBER': return 'سباك';
-      case 'PAINTER': return 'نقاش / دهانات';
-      case 'CARPENTER': return 'نجار';
-      case 'MASON': return 'بناء / مقاول عام';
-      case 'ARCHITECT': return 'مهندس معماري';
-      case 'DESIGNER': return 'مصمم ديكور';
+      case 'ELECTRICIAN': return 'ÙƒÙ‡Ø±Ø¨Ø§Ø¦ÙŠ';
+      case 'PLUMBER': return 'Ø³Ø¨Ø§Ùƒ';
+      case 'PAINTER': return 'Ù†Ù‚Ø§Ø´ / Ø¯Ù‡Ø§Ù†Ø§Øª';
+      case 'CARPENTER': return 'Ù†Ø¬Ø§Ø±';
+      case 'MASON': return 'Ø¨Ù†Ø§Ø¡ / Ù…Ù‚Ø§ÙˆÙ„ Ø¹Ø§Ù…';
+      case 'ARCHITECT': return 'Ù…Ù‡Ù†Ø¯Ø³ Ù…Ø¹Ù…Ø§Ø±ÙŠ';
+      case 'DESIGNER': return 'Ù…ØµÙ…Ù… Ø¯ÙŠÙƒÙˆØ±';
       default: return specialty;
     }
   }
@@ -111,6 +111,7 @@ export class ContractorsListComponent implements OnInit {
   }
 
   getStatusLabel(isActive: boolean) {
-    return isActive ? 'نشط' : 'غير نشط';
+    return isActive ? 'Ù†Ø´Ø·' : 'ØºÙŠØ± Ù†Ø´Ø·';
   }
 }
+
