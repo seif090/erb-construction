@@ -14,7 +14,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       if (user && requiredRoles.includes(user.role)) {
         return true;
       } else {
-        router.navigate(['/unauthorized']); // Or dashboard
+        router.navigate(['/dashboard']);
         return false;
       }
     }

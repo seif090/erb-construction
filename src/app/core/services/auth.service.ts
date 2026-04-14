@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap } from 'rxjs';
+import { Observable, map, of, tap, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -73,6 +73,32 @@ export class AuthService {
     );
   }
 
+  refreshSession(): Observable<boolean> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) return of(false);
+
+    return this.http.post<any>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
+      tap(response => {
+        if (response.success && response.data) {
+          const { accessToken, refreshToken: nextRefreshToken } = response.data;
+          this.setTokens(accessToken, nextRefreshToken);
+
+          const decoded = parseJwt(accessToken);
+          if (decoded) {
+            this.currentUser.set({
+              id: decoded.id,
+              name: decoded.name,
+              email: decoded.email,
+              role: decoded.role,
+            });
+          }
+        }
+      }),
+      map(response => !!response?.success),
+      catchError(() => of(false))
+    );
+  }
+
   logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
@@ -96,6 +122,11 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = this.getToken();
     return !!token && !this.isTokenExpired(token);
+  }
+
+  hasRole(roles: User['role'][]): boolean {
+    const user = this.currentUser();
+    return !!user && roles.includes(user.role);
   }
 
   private isTokenExpired(token: string): boolean {

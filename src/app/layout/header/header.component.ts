@@ -1,6 +1,7 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Menu, Search, Bell, Moon, Sun, Settings } from 'lucide-angular';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -11,6 +12,7 @@ import { LucideAngularModule, Menu, Search, Bell, Moon, Sun, Settings } from 'lu
 })
 export class HeaderComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
+  private authService = inject(AuthService);
   isDarkMode = false;
 
   readonly Menu = Menu;
@@ -31,5 +33,13 @@ export class HeaderComponent {
     } else {
       document.documentElement.classList.remove('dark');
     }
+  }
+
+  get currentUser() {
+    return this.authService.currentUser();
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

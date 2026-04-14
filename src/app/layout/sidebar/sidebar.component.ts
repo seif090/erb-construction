@@ -2,6 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule, LayoutDashboard, Users, FolderOpen, Building2, HardHat, FileText, Package, Calculator, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,6 +13,7 @@ import { LucideAngularModule, LayoutDashboard, Users, FolderOpen, Building2, Har
 })
 export class SidebarComponent {
   @Input() isOpen = true;
+  private authService = inject(AuthService);
 
   readonly LayoutDashboard = LayoutDashboard;
   readonly Users = Users;
@@ -22,14 +24,22 @@ export class SidebarComponent {
   readonly Package = Package;
   readonly Calculator = Calculator;
 
-  menuItems = [
-    { icon: this.LayoutDashboard, label: 'لوحة القيادة / Dashboard', route: '/dashboard' },
-    { icon: this.Users, label: 'العملاء / CRM', route: '/clients' },
-    { icon: this.FolderOpen, label: 'المشاريع / Projects', route: '/projects' },
-    { icon: this.Building2, label: 'العقارات / Real Estate', route: '/units' },
-    { icon: this.HardHat, label: 'المقاولين / Contractors', route: '/contractors' },
-    { icon: this.FileText, label: 'العقود / Contracts', route: '/contracts' },
-    { icon: this.Package, label: 'المخازن / Inventory', route: '/inventory' },
-    { icon: this.Calculator, label: 'الحسابات / Accounting', route: '/accounting' },
+  private menuItems = [
+    { icon: this.LayoutDashboard, label: 'لوحة القيادة / Dashboard', route: '/dashboard', roles: ['ADMIN', 'EMPLOYEE', 'CONTRACTOR', 'VIEWER'] },
+    { icon: this.Users, label: 'العملاء / CRM', route: '/clients', roles: ['ADMIN', 'EMPLOYEE'] },
+    { icon: this.FolderOpen, label: 'المشاريع / Projects', route: '/projects', roles: ['ADMIN', 'EMPLOYEE', 'CONTRACTOR'] },
+    { icon: this.Building2, label: 'العقارات / Real Estate', route: '/units', roles: ['ADMIN', 'EMPLOYEE'] },
+    { icon: this.HardHat, label: 'المقاولين / Contractors', route: '/contractors', roles: ['ADMIN', 'EMPLOYEE'] },
+    { icon: this.FileText, label: 'العقود / Contracts', route: '/contracts', roles: ['ADMIN', 'EMPLOYEE'] },
+    { icon: this.Package, label: 'المخازن / Inventory', route: '/inventory', roles: ['ADMIN', 'EMPLOYEE'] },
+    { icon: this.Calculator, label: 'الحسابات / Accounting', route: '/accounting', roles: ['ADMIN', 'EMPLOYEE'] },
   ];
+
+  get visibleMenuItems() {
+    return this.menuItems.filter((item) => this.authService.hasRole(item.roles as any));
+  }
+
+  get currentUser() {
+    return this.authService.currentUser();
+  }
 }
