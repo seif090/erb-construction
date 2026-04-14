@@ -1,1 +1,80 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply h-full antialiased font-arabic text-gray-800 bg-light;
+    direction: rtl; /* OOTB RTL support */
+  }
+
+  body.dark-theme {
+    @apply bg-dark text-gray-100;
+  }
+}
+
+@layer components {
+  /* Modern clean card */
+  .card {
+    @apply rounded-xl bg-white shadow-sm border border-gray-100 p-6 overflow-hidden;
+  }
+
+  .dark-theme .card {
+    @apply bg-[#1E293B] border-gray-700 shadow-none;
+  }
+
+  /* Form controls */
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200 outline-none;
+  }
+  
+  .dark-theme .input-field {
+    @apply bg-[#0F172A] border-gray-600 focus:ring-secondary text-white;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-light transition duration-200 shadow hover:shadow-md active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-secondary text-white rounded-lg font-medium hover:bg-secondary-light transition duration-200 shadow hover:shadow-md active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200;
+  }
+
+  .dark-theme .btn-outline {
+    @apply border-gray-600 text-gray-300 hover:bg-gray-800;
+  }
+}
+
+/* Material overrides for cleaner look */
+.mat-mdc-text-field-wrapper {
+  @apply rounded-lg !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+  @apply bg-gray-600;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
