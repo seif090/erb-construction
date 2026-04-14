@@ -1,0 +1,161 @@
+<div class="h-full flex flex-col space-y-6">
+  
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">لوحة القيادة / Dashboard</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">نظرة عامة على نشاط الشركة وأداء المشاريع</p>
+    </div>
+    
+    <div class="mt-4 md:mt-0 flex gap-3">
+      <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+        تقرير الشهر
+      </button>
+      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+        <lucide-icon [img]="TrendingUp" [size]="16"></lucide-icon>
+        إضافة مشروع
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex items-center justify-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+
+  <ng-container *ngIf="!isLoading && stats">
+    <!-- KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      
+      <!-- Card 1 -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">إجمالي العملاء</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.totalClients }}</p>
+          </div>
+          <div class="h-12 w-12 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-500 flex items-center justify-center">
+            <lucide-icon [img]="Users" [size]="24"></lucide-icon>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm text-success">
+          <lucide-icon [img]="TrendingUp" [size]="16" class="mr-1 ml-1"></lucide-icon>
+          <span>+12% عن الشهر الماضي</span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">مشاريع نشطة</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.activeProjects }}</p>
+          </div>
+          <div class="h-12 w-12 rounded-lg bg-primary-light/10 text-primary flex items-center justify-center">
+            <lucide-icon [img]="HardHat" [size]="24"></lucide-icon>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm text-success">
+          <lucide-icon [img]="TrendingUp" [size]="16" class="mr-1 ml-1"></lucide-icon>
+          <span>2 مشروع جديد</span>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">وحدات متاحة</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.availableUnits }}</p>
+          </div>
+          <div class="h-12 w-12 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center">
+            <lucide-icon [img]="Building2" [size]="24"></lucide-icon>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm text-slate-500">
+          <span>شقق وفيلات للبيع</span>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">إيرادات الشهر</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-2">{{ stats.monthlyRevenue | number:'1.0-0' }} <span class="text-sm font-normal text-slate-500">ر.س</span></p>
+          </div>
+          <div class="h-12 w-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-500 flex items-center justify-center">
+            <lucide-icon [img]="PiggyBank" [size]="24"></lucide-icon>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm text-success">
+          <lucide-icon [img]="TrendingUp" [size]="16" class="mr-1 ml-1"></lucide-icon>
+          <span>+8.2% نمو</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Line Chart -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4">تحليل الإيرادات (شهري)</h3>
+        <div style="display: block; width: 100%; height: 300px;">
+          <canvas baseChart
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+            [type]="lineChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Pie Chart -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4">حالة المشاريع</h3>
+        <div style="display: block; max-width: 100%; height: 300px; display: flex; justify-content: center;">
+          <canvas baseChart
+            [data]="pieChartData"
+            [type]="pieChartType">
+          </canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Additional Tables / Feed -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm">
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white">أحدث المهام / العقود المعلقة</h3>
+        <button class="text-sm text-primary hover:text-primary-light font-medium">عرض الكل</button>
+      </div>
+      <div class="p-0">
+        <table class="w-full text-sm text-right rtl:text-right text-slate-500 dark:text-slate-400">
+          <thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700/50 dark:text-slate-400">
+            <tr>
+              <th scope="col" class="px-6 py-3">العميل</th>
+              <th scope="col" class="px-6 py-3">المشروع / الوحدة</th>
+              <th scope="col" class="px-6 py-3">التاريخ</th>
+              <th scope="col" class="px-6 py-3">الحالة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white dark:bg-slate-800 border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+              <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">أحمد محمود</td>
+              <td class="px-6 py-4">تشطيب فيلا الياسمين</td>
+              <td class="px-6 py-4">2023-11-20</td>
+              <td class="px-6 py-4"><span class="bg-warning/10 text-warning px-2.5 py-0.5 rounded-full text-xs font-medium">قيد المراجعة</span></td>
+            </tr>
+            <tr class="bg-white dark:bg-slate-800 border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+              <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">شركة الأمل</td>
+              <td class="px-6 py-4">صيانة مجمع الرحاب</td>
+              <td class="px-6 py-4">2023-11-18</td>
+              <td class="px-6 py-4"><span class="bg-success/10 text-success px-2.5 py-0.5 rounded-full text-xs font-medium">مكتمل</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+</div>

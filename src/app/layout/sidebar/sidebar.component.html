@@ -1,1 +1,52 @@
-<p>sidebar works!</p>
+<aside 
+  [class.w-72]="isOpen" 
+  [class.w-20]="!isOpen"
+  class="h-full bg-primary-dark text-slate-300 transition-all duration-300 ease-in-out flex flex-col shadow-xl">
+  
+  <!-- Logo Section -->
+  <div class="h-16 flex items-center justify-center border-b border-primary-light/30 px-4 bg-primary/20 backdrop-blur-md">
+    <div *ngIf="isOpen" class="flex items-center space-x-2 space-x-reverse font-bold text-xl text-white tracking-wide">
+      <span class="text-secondary">Erb</span> <span>ERP System</span>
+    </div>
+    <div *ngIf="!isOpen" class="font-bold text-2xl text-secondary text-center">
+      E
+    </div>
+  </div>
+
+  <!-- Navigation Links -->
+  <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+    <ul class="space-y-1.5 px-3">
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route" 
+           routerLinkActive="bg-primary text-white border-secondary border-r-4 shadow-md bg-opacity-80" 
+           [routerLinkActiveOptions]="{exact: false}"
+           class="flex items-center rounded-lg px-3 py-3 transition-all duration-200 hover:bg-primary-light/50 hover:text-white group">
+          
+          <lucide-icon [img]="item.icon" [size]="20" class="flex-shrink-0" [class.text-secondary]="false"></lucide-icon>
+          
+          <span *ngIf="isOpen" class="mr-3 font-medium whitespace-nowrap overflow-hidden transition-all duration-200">
+            {{ item.label }}
+          </span>
+
+          <!-- Tooltip for collapsed mode -->
+          <div *ngIf="!isOpen" class="absolute right-16 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity duration-200 border border-slate-700">
+            {{ item.label }}
+          </div>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Bottom Section (User/Logout quick actions if needed) -->
+  <div class="p-4 border-t border-primary-light/30">
+    <div class="flex items-center" [class.justify-center]="!isOpen" [class.justify-start]="isOpen">
+      <div class="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-white font-bold border border-secondary/50 shadow-inner">
+        AD
+      </div>
+      <div *ngIf="isOpen" class="mr-3 overflow-hidden">
+        <p class="text-sm font-semibold text-white truncate">Admin User</p>
+        <p class="text-xs text-slate-400 truncate">admin&#64;erb.com</p>
+      </div>
+    </div>
+  </div>
+</aside>

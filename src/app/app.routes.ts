@@ -1,3 +1,21 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { LoginComponent } from './features/auth/login/login.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: 'auth/login', component: LoginComponent },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      // Other modules will be lazy loaded here as we build them, e.g.:
+      // { path: 'clients', loadComponent: () => import('./features/crm/clients-list/clients-list.component').then(m => m.ClientsListComponent) }
+    ]
+  },
+  { path: '**', redirectTo: '/auth/login' }
+];

@@ -1,1 +1,49 @@
-<p>header works!</p>
+<header class="h-16 flex items-center justify-between px-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 rtl:space-x-reverse shadow-sm">
+  <!-- Left Side: Toggle & Search -->
+  <div class="flex items-center space-x-4 space-x-reverse w-1/2">
+    <button (click)="onToggleSidebar()" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+      <lucide-icon [img]="Menu" [size]="20"></lucide-icon>
+    </button>
+    
+    <!-- Search Bar -->
+    <div class="hidden md:flex relative w-full max-w-md">
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+        <lucide-icon [img]="Search" [size]="18"></lucide-icon>
+      </div>
+      <input type="text" 
+             placeholder="بحث في النظام... / Search..." 
+             class="block w-full text-sm rounded-full border-0 py-2 pl-4 pr-10 text-slate-900 dark:text-slate-100 ring-1 ring-inset ring-slate-300 dark:ring-slate-700 bg-slate-50 dark:bg-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary transition-all duration-200">
+    </div>
+  </div>
+
+  <!-- Right Side: Actions & Profile -->
+  <div class="flex items-center space-x-3 space-x-reverse">
+    <!-- Theme Toggle -->
+    <button (click)="toggleTheme()" class="p-2 rounded-full text-slate-500 hover:text-primary hover:bg-primary-light/10 dark:hover:bg-slate-800 transition-colors tooltip-trigger relative">
+      <lucide-icon *ngIf="!isDarkMode" [img]="Moon" [size]="20"></lucide-icon>
+      <lucide-icon *ngIf="isDarkMode" [img]="Sun" [size]="20"></lucide-icon>
+    </button>
+
+    <!-- Settings -->
+    <button class="p-2 rounded-full text-slate-500 hover:text-primary hover:bg-primary-light/10 dark:hover:bg-slate-800 transition-colors">
+      <lucide-icon [img]="Settings" [size]="20"></lucide-icon>
+    </button>
+    
+    <!-- Notifications -->
+    <button class="p-2 rounded-full text-slate-500 hover:text-primary hover:bg-primary-light/10 dark:hover:bg-slate-800 transition-colors relative">
+      <lucide-icon [img]="Bell" [size]="20"></lucide-icon>
+      <span class="absolute top-1 right-2 block h-2 w-2 rounded-full bg-error ring-2 ring-white dark:ring-slate-900"></span>
+    </button>
+
+    <!-- Profile Separator -->
+    <div class="h-6 w-px bg-slate-300 dark:bg-slate-700 mx-2 hidden sm:block"></div>
+
+    <!-- User Dropdown (Dummy for now) -->
+    <button class="flex items-center space-x-2 space-x-reverse focus:outline-none focus:ring-2 focus:ring-primary/50 p-1 rounded-full border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200">
+      <img src="https://i.pravatar.cc/150?u=a042581f4e29026704z" alt="User Profile" class="h-8 w-8 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm object-cover">
+      <div class="hidden sm:block text-right leading-none">
+        <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">سيف الدين Admin</p>
+      </div>
+    </button>
+  </div>
+</header>
