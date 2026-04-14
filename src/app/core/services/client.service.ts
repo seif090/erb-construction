@@ -54,7 +54,7 @@ export class ClientService extends BaseApiService {
   }
 
   updateClient(id: string, data: Partial<Client>): Observable<ApiResponse<Client>> {
-    return this.patch<Client>(`${this.endpoint}/${id}`, data);
+    return this.put<Client>(`${this.endpoint}/${id}`, data);
   }
 
   deleteClient(id: string): Observable<ApiResponse<any>> {
@@ -71,6 +71,15 @@ export class ClientService extends BaseApiService {
 
   addClientAttachment(clientId: string, data: CreateClientAttachmentDto): Observable<ApiResponse<ClientAttachment>> {
     return this.post<ClientAttachment>(`${this.endpoint}/${clientId}/attachments`, data);
+  }
+
+  uploadClientAttachment(clientId: string, file: File, name?: string): Observable<ApiResponse<ClientAttachment>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (name) {
+      formData.append('name', name);
+    }
+    return this.post<ClientAttachment>(`${this.endpoint}/${clientId}/attachments/upload`, formData);
   }
 
   deleteClientAttachment(clientId: string, attachmentId: string): Observable<ApiResponse<null>> {

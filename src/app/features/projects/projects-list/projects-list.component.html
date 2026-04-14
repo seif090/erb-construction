@@ -120,6 +120,13 @@
            <span [class]="'text-sm font-bold ' + (project.spent > project.budget ? 'text-red-500' : 'text-slate-800 dark:text-white')">{{ project.spent | number }} ر.س</span>
         </div>
       </div>
+
+      <div class="px-5 pb-4">
+        <a [routerLink]="['/projects', project.id, 'stages']" class="inline-flex items-center gap-2 text-xs font-bold text-primary hover:text-primary-light">
+          <lucide-icon [img]="ListTodo" [size]="14"></lucide-icon>
+          إدارة مراحل المشروع
+        </a>
+      </div>
     </div>
 
   </div>

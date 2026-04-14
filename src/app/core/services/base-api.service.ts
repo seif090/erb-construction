@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export interface ApiResponse<T> {
@@ -46,6 +46,12 @@ export class BaseApiService {
 
   protected patch<T>(endpoint: string, data: any): Observable<ApiResponse<T>> {
     return this.http.patch<ApiResponse<T>>(`${this.apiUrl}/${endpoint}`, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  protected put<T>(endpoint: string, data: any): Observable<ApiResponse<T>> {
+    return this.http.put<ApiResponse<T>>(`${this.apiUrl}/${endpoint}`, data).pipe(
       catchError(this.handleError)
     );
   }

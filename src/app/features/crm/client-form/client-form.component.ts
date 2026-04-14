@@ -35,6 +35,7 @@ export class ClientFormComponent {
   isEdit = false;
   isSubmitting = signal(false);
   isUploadingAttachment = signal(false);
+  selectedAttachmentFile = signal<File | null>(null);
   attachments = signal<ClientAttachment[]>([]);
 
   readonly X = X;
@@ -126,6 +127,39 @@ export class ClientFormComponent {
       },
       error: (err) => {
         console.error('Error adding attachment:', err);
+        this.isUploadingAttachment.set(false);
+      },
+    });
+  }
+
+  onAttachmentFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    this.selectedAttachmentFile.set(file);
+    if (file && !this.attachmentForm.get('name')?.value) {
+      this.attachmentForm.patchValue({ name: file.name });
+    }
+  }
+
+  uploadAttachmentFile() {
+    if (!this.data.client?.id || !this.selectedAttachmentFile()) {
+      return;
+    }
+
+    this.isUploadingAttachment.set(true);
+    const file = this.selectedAttachmentFile()!;
+    const displayName = this.attachmentForm.get('name')?.value || file.name;
+
+    this.clientService.uploadClientAttachment(this.data.client.id, file, displayName).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.attachments.set([res.data, ...this.attachments()]);
+          this.selectedAttachmentFile.set(null);
+        }
+        this.isUploadingAttachment.set(false);
+      },
+      error: (err) => {
+        console.error('Error uploading attachment file:', err);
         this.isUploadingAttachment.set(false);
       },
     });

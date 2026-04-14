@@ -1,15 +1,16 @@
 ﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProjectService, Project } from '../../../core/services/project.service';
 import { ProjectFormComponent } from '../project-form/project-form.component';
-import { LucideAngularModule, Search, FolderPlus, MapPin, Calendar, Clock, MoreVertical, TrendingUp, CheckCircle2 } from 'lucide-angular';
+import { LucideAngularModule, Search, FolderPlus, MapPin, Calendar, Clock, MoreVertical, TrendingUp, CheckCircle2, ListTodo } from 'lucide-angular';
 
 @Component({
   selector: 'app-projects-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, MatDialogModule, RouterModule],
   templateUrl: './projects-list.component.html',
   styleUrl: './projects-list.component.scss'
 })
@@ -31,6 +32,7 @@ export class ProjectsListComponent implements OnInit {
   readonly MoreVertical = MoreVertical;
   readonly TrendingUp = TrendingUp;
   readonly CheckCircle2 = CheckCircle2;
+  readonly ListTodo = ListTodo;
 
   ngOnInit() {
     this.fetchProjects();

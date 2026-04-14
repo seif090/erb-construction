@@ -62,7 +62,7 @@ export class ProjectService extends BaseApiService {
   }
 
   updateProjectStage(projectId: string, stageId: string, data: Partial<ProjectStage>): Observable<ApiResponse<ProjectStage>> {
-    return this.patch<ProjectStage>(`${this.endpoint}/${projectId}/stages/${stageId}`, data);
+    return this.put<ProjectStage>(`${this.endpoint}/${projectId}/stages/${stageId}`, data);
   }
 
   createProject(data: Partial<Project>): Observable<ApiResponse<Project>> {
@@ -70,7 +70,7 @@ export class ProjectService extends BaseApiService {
   }
 
   updateProject(id: string, data: Partial<Project>): Observable<ApiResponse<Project>> {
-    return this.patch<Project>(`${this.endpoint}/${id}`, data);
+    return this.put<Project>(`${this.endpoint}/${id}`, data);
   }
 
   deleteProject(id: string): Observable<ApiResponse<any>> {

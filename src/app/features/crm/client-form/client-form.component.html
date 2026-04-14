@@ -116,6 +116,14 @@
         <input formControlName="url" type="url" class="block w-full text-sm rounded-xl border-0 py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary" placeholder="https://...">
       </div>
 
+      <div class="mb-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <input type="file" (change)="onAttachmentFileSelected($event)" class="block w-full text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2">
+        <button type="button" (click)="uploadAttachmentFile()" [disabled]="!selectedAttachmentFile() || isUploadingAttachment()" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60">
+          <span *ngIf="!isUploadingAttachment()">رفع ملف فعلي</span>
+          <span *ngIf="isUploadingAttachment()">جاري الرفع...</span>
+        </button>
+      </div>
+
       <button type="button" (click)="addAttachment()" [disabled]="isUploadingAttachment()" class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-60">
         <lucide-icon [img]="Plus" [size]="14"></lucide-icon>
         <span *ngIf="!isUploadingAttachment()">إضافة مرفق</span>

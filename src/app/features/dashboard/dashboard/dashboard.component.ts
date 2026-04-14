@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Users, Folder, Building, TrendingUp, ArrowUpRight, ArrowDownRight, Clock, CheckCircle2, UserPlus, HardHat, Building2, PiggyBank } from 'lucide-angular';
-import { BaseChartDirective } from 'ng2-charts';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { DashboardService, DashboardKPIs } from '../../../core/services/dashboard.service';
 
@@ -9,6 +9,7 @@ import { DashboardService, DashboardKPIs } from '../../../core/services/dashboar
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, LucideAngularModule, BaseChartDirective],
+  providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
