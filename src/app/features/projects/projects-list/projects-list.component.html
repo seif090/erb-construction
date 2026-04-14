@@ -1,1 +1,130 @@
-<p>projects-list works!</p>
+<div class="h-full flex flex-col space-y-6">
+  
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">المشاريع / Projects</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">إدارة مشاريع التشطيب والديكور ومتابعة الإنجاز</p>
+    </div>
+    
+    <div class="flex gap-3">
+      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+        <lucide-icon [img]="FolderPlus" [size]="16"></lucide-icon>
+        مشروع جديد
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and Actions -->
+  <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+    <div class="relative w-full max-w-md">
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+        <lucide-icon [img]="Search" [size]="18"></lucide-icon>
+      </div>
+      <input type="text" 
+             [ngModel]="searchQuery()"
+             (input)="onSearchChange($event)"
+             placeholder="بحث عن مشروع أو عميل... / Search..." 
+             class="block w-full text-sm rounded-lg border-0 py-2.5 pl-4 pr-10 text-slate-900 dark:text-slate-100 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 bg-white dark:bg-slate-800 shadow-sm focus:ring-2 focus:ring-inset focus:ring-primary transition-all duration-200">
+    </div>
+
+    <div class="flex items-center gap-2 text-sm text-slate-500">
+      <span>تصفية حسب:</span>
+      <select class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-3 text-xs focus:ring-primary focus:border-primary outline-none">
+        <option>الكل</option>
+        <option>قيد التنفيذ</option>
+        <option>قيد الانتظار</option>
+        <option>مكتمل</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="flex items-center justify-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div *ngIf="!isLoading()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    
+    <!-- Project Card -->
+    <div *ngFor="let project of filteredProjects()" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
+      
+      <!-- Card Image Placeholder / Progress Overlay -->
+      <div class="h-40 bg-slate-100 dark:bg-slate-900 relative overflow-hidden flex items-center justify-center">
+         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+         <div class="z-0 opacity-20 group-hover:scale-110 transition-transform duration-700">
+            <lucide-icon [img]="FolderPlus" [size]="64" class="text-slate-300"></lucide-icon>
+         </div>
+         
+         <!-- Status Badge -->
+         <div class="absolute top-4 left-4 z-20">
+            <span [class]="'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md ' + getStatusClass(project.status)">
+              {{ getStatusLabel(project.status) }}
+            </span>
+         </div>
+         
+         <!-- Progress Ring Overlay (Experimental look) -->
+         <div class="absolute bottom-4 right-4 z-20 bg-white/10 backdrop-blur-md rounded-lg px-2 py-1 border border-white/20 text-white font-bold text-xs">
+            {{ project.progress }}%
+         </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex justify-between items-start">
+          <h3 class="text-lg font-bold text-slate-800 dark:text-white group-hover:text-primary transition-colors cursor-pointer">{{ project.name }}</h3>
+          <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+            <lucide-icon [img]="MoreVertical" [size]="18"></lucide-icon>
+          </button>
+        </div>
+        
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
+          العميل: <span class="font-medium text-slate-700 dark:text-slate-300">{{ project.clientName }}</span>
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="mt-6 space-y-2">
+          <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+            <span>Progress</span>
+            <span>{{ project.progress }}%</span>
+          </div>
+          <div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(30,58,95,0.3)]" [style.width.%]="project.progress"></div>
+          </div>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="mt-6 grid grid-cols-2 gap-4 border-t border-slate-50 dark:border-slate-700 pt-4">
+          <div class="flex items-center gap-2 text-xs text-slate-500">
+            <lucide-icon [img]="MapPin" [size]="14"></lucide-icon>
+            <span class="truncate">{{ project.location }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-500 justify-end">
+            <lucide-icon [img]="Calendar" [size]="14"></lucide-icon>
+            <span>{{ project.startDate | date:'MMM d, y' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Footer (Budget Info) -->
+      <div class="px-5 py-3 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-50 dark:border-slate-700 flex items-center justify-between">
+        <div class="flex flex-col">
+          <span class="text-[10px] text-slate-400 uppercase font-bold">الميزانية / Budget</span>
+          <span class="text-sm font-bold text-slate-800 dark:text-white">{{ project.budget | number }} ر.س</span>
+        </div>
+        <div class="flex flex-col text-left rtl:text-left">
+           <span class="text-[10px] text-slate-400 uppercase font-bold">مصروف / Spent</span>
+           <span [class]="'text-sm font-bold ' + (project.spent > project.budget ? 'text-red-500' : 'text-slate-800 dark:text-white')">{{ project.spent | number }} ر.س</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading() && projects().length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400">
+    <lucide-icon [img]="FolderPlus" [size]="48" class="mb-4 opacity-20"></lucide-icon>
+    <p>لا توجد مشاريع مضافة حالياً.</p>
+  </div>
+</div>

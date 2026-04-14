@@ -1,0 +1,122 @@
+<div class="h-full flex flex-col space-y-6">
+  
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">المخازن والتوريدات / Inventory</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">إدارة مستويات المخزون، الطلبيات، وتنبيهات النقص</p>
+    </div>
+    
+    <div class="flex gap-3">
+      <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm flex items-center gap-2">
+        <lucide-icon [img]="ArrowUpDown" [size]="16"></lucide-icon>
+        حركة المخزن
+      </button>
+      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+        <lucide-icon [img]="Plus" [size]="16"></lucide-icon>
+        إضافة صنف
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
+      <p class="text-[10px] text-slate-400 font-bold uppercase">إجمالي الأصناف</p>
+      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">{{ items().length }}</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm border-r-4 border-r-error">
+      <p class="text-[10px] text-error font-bold uppercase">تنبيهات نقص المخزون</p>
+      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">2 صنف</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
+      <p class="text-[10px] text-slate-400 font-bold uppercase">قيمة المخزون</p>
+      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">450,000 <span class="text-xs">ر.س</span></p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
+      <p class="text-[10px] text-slate-400 font-bold uppercase">طلبيات توريد نشطة</p>
+      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">5</p>
+    </div>
+  </div>
+
+  <!-- Search and Table -->
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-md">
+    <div class="p-4 border-b border-slate-100 dark:border-slate-700">
+      <div class="relative w-full max-w-md">
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+          <lucide-icon [img]="Search" [size]="18"></lucide-icon>
+        </div>
+        <input type="text" 
+               [ngModel]="searchQuery()"
+               (input)="onSearchChange($event)"
+               placeholder="بحث بالاسم أو التصنيف... / Search..." 
+               class="block w-full text-sm rounded-lg border-0 py-2 pl-4 pr-10 text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary">
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-right rtl:text-right text-slate-500 dark:text-slate-400 border-collapse">
+        <thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-900/50 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
+          <tr>
+            <th scope="col" class="px-6 py-4">الصنف / Item</th>
+            <th scope="col" class="px-6 py-4">التصنيف / Category</th>
+            <th scope="col" class="px-6 py-4">الكمية المتاحة / Qty</th>
+            <th scope="col" class="px-6 py-4">سعر الوحدة / Price</th>
+            <th scope="col" class="px-6 py-4">الموقع / Location</th>
+            <th scope="col" class="px-6 py-4 text-center">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tr *ngIf="isLoading()" class="animate-pulse">
+            <td colspan="6" class="px-6 py-10 text-center text-slate-400">جاري التحميل...</td>
+          </tr>
+          
+          <tr *ngFor="let item of filteredItems()" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-500 flex items-center justify-center">
+                  <lucide-icon [img]="Package" [size]="20"></lucide-icon>
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white">{{ item.name }}</div>
+                  <div *ngIf="isLowStock(item)" class="flex items-center gap-1 text-[10px] text-error font-bold mt-0.5 animate-pulse">
+                    <lucide-icon [img]="AlertTriangle" [size]="10"></lucide-icon>
+                    تنبيه: مخزون منخفض
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                {{ item.category }}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <span [class]="'text-sm font-bold ' + (isLowStock(item) ? 'text-error' : 'text-slate-800 dark:text-white')">
+                  {{ item.quantity }}
+                </span>
+                <span class="text-xs text-slate-400">{{ getUnitLabel(item.unit) }}</span>
+              </div>
+              <div class="w-24 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full mt-1 overflow-hidden">
+                <div [class]="'h-full transition-all ' + (isLowStock(item) ? 'bg-error' : 'bg-success')" 
+                     [style.width.%]="(item.quantity / (item.minQuantity * 2)) * 100"></div>
+              </div>
+            </td>
+            <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">
+              {{ item.unitPrice | number:'1.0-0' }} <span class="text-[10px] font-normal text-slate-400">ر.س</span>
+            </td>
+            <td class="px-6 py-4 italic text-slate-500 text-xs">
+              {{ item.location }}
+            </td>
+            <td class="px-6 py-4 text-center">
+              <button class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                <lucide-icon [img]="MoreVertical" [size]="18"></lucide-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
