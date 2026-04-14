@@ -1,23 +1,24 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ContractorService, Contractor } from '../../../../core/services/contractor.service';
+import { ContractorFormComponent } from '../contractor-form/contractor-form.component';
 import { LucideAngularModule, Search, HardHat, Phone, Mail, Star, MoreVertical, Plus, Briefcase } from 'lucide-angular';
 
 @Component({
   selector: 'app-contractors-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, MatDialogModule],
   templateUrl: './contractors-list.component.html',
   styleUrl: './contractors-list.component.scss'
 })
 export class ContractorsListComponent implements OnInit {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/contractors`;
+  private contractorService = inject(ContractorService);
+  private dialog = inject(MatDialog);
 
-  contractors = signal<any[]>([]);
-  filteredContractors = signal<any[]>([]);
+  contractors = signal<Contractor[]>([]);
+  filteredContractors = signal<Contractor[]>([]);
   isLoading = signal(true);
   searchQuery = signal('');
 
@@ -36,7 +37,7 @@ export class ContractorsListComponent implements OnInit {
 
   fetchContractors() {
     this.isLoading.set(true);
-    this.http.get<any>(this.apiUrl).subscribe({
+    this.contractorService.getContractors().subscribe({
       next: (res) => {
         if (res.success) {
           this.contractors.set(res.data);
@@ -47,15 +48,29 @@ export class ContractorsListComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching contractors:', err);
         // Fallback mock data
-        const mockData = [
-          { id: '1', name: 'يوسف ابراهيم', trade: 'ELECTRICIAN', company: 'النور للكهرباء', phone: '0101234567', email: 'youssef@electric.com', rating: 5, status: 'ACTIVE' },
-          { id: '2', name: 'خالد ممدوح', trade: 'PLUMBER', company: 'سباكة ممدوح', phone: '0119876543', email: 'khaled@plumbing.com', rating: 4, status: 'ACTIVE' },
-          { id: '3', name: 'سناء محمود', trade: 'DESIGNER', company: 'مودرن ديزاين', phone: '0123344556', email: 'sanaa@design.com', rating: 5, status: 'ON_LEAVE' },
-          { id: '4', name: 'محمود علي', trade: 'PAINTER', company: 'دهانات الجوهرة', phone: '0156677889', email: 'mahmoud@paint.com', rating: 3, status: 'INACTIVE' },
+        const mockData: Contractor[] = [
+          { id: '1', name: 'يوسف ابراهيم', specialty: 'ELECTRICIAN', specialties: [], phone: '0101234567', email: 'youssef@electric.com', rating: 5, isActive: true, totalProjects: 12, createdAt: '', updatedAt: '' },
+          { id: '2', name: 'خالد ممدوح', specialty: 'PLUMBER', specialties: [], phone: '0119876543', email: 'khaled@plumbing.com', rating: 4, isActive: true, totalProjects: 8, createdAt: '', updatedAt: '' },
+          { id: '3', name: 'سناء محمود', specialty: 'DESIGNER', specialties: [], phone: '0123344556', email: 'sanaa@design.com', rating: 5, isActive: true, totalProjects: 5, createdAt: '', updatedAt: '' },
+          { id: '4', name: 'محمود علي', specialty: 'PAINTER', specialties: [], phone: '0156677889', email: 'mahmoud@paint.com', rating: 3, isActive: false, totalProjects: 20, createdAt: '', updatedAt: '' },
         ];
         this.contractors.set(mockData);
         this.applyFilter();
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  openContractorForm(contractor?: Contractor) {
+    const dialogRef = this.dialog.open(ContractorFormComponent, {
+      width: '600px',
+      data: { contractor },
+      panelClass: 'glass-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fetchContractors();
       }
     });
   }
@@ -68,8 +83,7 @@ export class ContractorsListComponent implements OnInit {
     }
     const filtered = this.contractors().filter(c => 
       c.name.toLowerCase().includes(query) || 
-      c.company?.toLowerCase().includes(query) ||
-      c.trade.toLowerCase().includes(query)
+      c.specialty.toLowerCase().includes(query)
     );
     this.filteredContractors.set(filtered);
   }
@@ -79,8 +93,8 @@ export class ContractorsListComponent implements OnInit {
     this.applyFilter();
   }
 
-  getTradeLabel(trade: string) {
-    switch (trade) {
+  getTradeLabel(specialty: string) {
+    switch (specialty) {
       case 'ELECTRICIAN': return 'كهربائي';
       case 'PLUMBER': return 'سباك';
       case 'PAINTER': return 'نقاش / دهانات';
@@ -88,25 +102,15 @@ export class ContractorsListComponent implements OnInit {
       case 'MASON': return 'بناء / مقاول عام';
       case 'ARCHITECT': return 'مهندس معماري';
       case 'DESIGNER': return 'مصمم ديكور';
-      default: return trade;
+      default: return specialty;
     }
   }
 
-  getStatusClass(status: string) {
-    switch (status) {
-      case 'ACTIVE': return 'bg-success/10 text-success';
-      case 'INACTIVE': return 'bg-error/10 text-error';
-      case 'ON_LEAVE': return 'bg-warning/10 text-warning';
-      default: return 'bg-slate-500/10 text-slate-500';
-    }
+  getStatusClass(isActive: boolean) {
+    return isActive ? 'bg-success/10 text-success' : 'bg-error/10 text-error';
   }
 
-  getStatusLabel(status: string) {
-    switch (status) {
-      case 'ACTIVE': return 'نشط';
-      case 'INACTIVE': return 'غير نشط';
-      case 'ON_LEAVE': return 'في إجازة';
-      default: return status;
-    }
+  getStatusLabel(isActive: boolean) {
+    return isActive ? 'نشط' : 'غير نشط';
   }
 }

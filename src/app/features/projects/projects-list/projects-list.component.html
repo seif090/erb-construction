@@ -8,7 +8,7 @@
     </div>
     
     <div class="flex gap-3">
-      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+      <button (click)="openProjectForm()" class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
         <lucide-icon [img]="FolderPlus" [size]="16"></lucide-icon>
         مشروع جديد
       </button>
@@ -64,33 +64,33 @@
             </span>
          </div>
          
-         <!-- Progress Ring Overlay (Experimental look) -->
+         <!-- Progress Ring Overlay -->
          <div class="absolute bottom-4 right-4 z-20 bg-white/10 backdrop-blur-md rounded-lg px-2 py-1 border border-white/20 text-white font-bold text-xs">
-            {{ project.progress }}%
+            {{ getProgress(project) | number:'1.0-0' }}%
          </div>
       </div>
 
       <!-- Card Body -->
       <div class="p-5 flex-1 flex flex-col">
         <div class="flex justify-between items-start">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white group-hover:text-primary transition-colors cursor-pointer">{{ project.name }}</h3>
-          <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <h3 (click)="openProjectForm(project)" class="text-lg font-bold text-slate-800 dark:text-white group-hover:text-primary transition-colors cursor-pointer truncate">{{ project.name }}</h3>
+          <button (click)="openProjectForm(project)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
             <lucide-icon [img]="MoreVertical" [size]="18"></lucide-icon>
           </button>
         </div>
         
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-          العميل: <span class="font-medium text-slate-700 dark:text-slate-300">{{ project.clientName }}</span>
+          العميل: <span class="font-medium text-slate-700 dark:text-slate-300">{{ project.client?.name || 'N/A' }}</span>
         </p>
 
         <!-- Progress Bar -->
         <div class="mt-6 space-y-2">
           <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
             <span>Progress</span>
-            <span>{{ project.progress }}%</span>
+            <span>{{ getProgress(project) | number:'1.0-0' }}%</span>
           </div>
           <div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div class="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(30,58,95,0.3)]" [style.width.%]="project.progress"></div>
+            <div class="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(30,58,95,0.3)]" [style.width.%]="getProgress(project)"></div>
           </div>
         </div>
 
@@ -98,7 +98,7 @@
         <div class="mt-6 grid grid-cols-2 gap-4 border-t border-slate-50 dark:border-slate-700 pt-4">
           <div class="flex items-center gap-2 text-xs text-slate-500">
             <lucide-icon [img]="MapPin" [size]="14"></lucide-icon>
-            <span class="truncate">{{ project.location }}</span>
+            <span class="truncate">{{ project.location || 'غير محدد' }}</span>
           </div>
           <div class="flex items-center gap-2 text-xs text-slate-500 justify-end">
             <lucide-icon [img]="Calendar" [size]="14"></lucide-icon>
@@ -123,7 +123,7 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!isLoading() && projects().length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400">
+  <div *ngIf="!isLoading() && filteredProjects().length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400">
     <lucide-icon [img]="FolderPlus" [size]="48" class="mb-4 opacity-20"></lucide-icon>
     <p>لا توجد مشاريع مضافة حالياً.</p>
   </div>

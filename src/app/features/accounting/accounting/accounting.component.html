@@ -3,159 +3,157 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">المحاسبة والمالية / Accounting</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">تتبع الدخل، المصروفات، والتدفق النقدي للمشاريع</p>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">الإدارة المالية / Accounting</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">تتبع الإيرادات والمصروفات، الحسابات الختامية، وكشوفات الحساب</p>
     </div>
     
     <div class="flex gap-3">
-      <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm flex items-center gap-2">
-        <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
-        تقارير ضريبية
-      </button>
-      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+      <button (click)="openTransactionForm()" class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
         <lucide-icon [img]="Plus" [size]="16"></lucide-icon>
-        عملية مالية جديدة
+        إضافة حركة مالية
       </button>
     </div>
   </div>
 
-  <!-- Financial Summary Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- Income Card -->
-    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-      <div class="absolute -right-4 -top-4 text-success/10 group-hover:scale-110 transition-transform duration-500">
-         <lucide-icon [img]="DollarSign" [size]="100"></lucide-icon>
-      </div>
-      <div class="relative z-10">
-        <div class="flex items-center gap-2 text-success mb-2 font-bold text-xs uppercase tracking-widest">
-           <lucide-icon [img]="ArrowUpRight" [size]="14"></lucide-icon>
-           إجمالي الدخل
+  <!-- Financial Overview Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+     <!-- Balance Card -->
+     <div class="bg-primary rounded-2xl p-6 text-white shadow-xl shadow-primary/20 relative overflow-hidden group">
+        <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
+           <lucide-icon [img]="Wallet" [size]="160"></lucide-icon>
         </div>
-        <div class="text-3xl font-black text-slate-900 dark:text-white">{{ stats().totalIncome | number }} <span class="text-xs font-normal text-slate-400">ر.س</span></div>
-      </div>
-    </div>
+        <div class="relative z-10 flex justify-between items-start">
+           <div>
+              <p class="text-xs font-bold text-white/60 uppercase tracking-widest">الميزان المالي / Balance</p>
+              <h2 class="text-3xl font-black mt-1">{{ summary()?.balance | number }} <span class="text-sm font-normal opacity-70">ر.س</span></h2>
+           </div>
+           <div class="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center">
+              <lucide-icon [img]="Wallet" [size]="20"></lucide-icon>
+           </div>
+        </div>
+        <div class="mt-6 flex items-center gap-2 text-[10px] font-bold">
+           <span class="bg-white/20 px-2 py-1 rounded">صافي الربح</span>
+           <span class="opacity-70 text-xs">{{ (((summary()?.balance || 0) / (summary()?.totalIncome || 1)) * 100) | number:'1.0-0' }}% هامش الربح الحالي</span>
+        </div>
+     </div>
 
-    <!-- Expense Card -->
-    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-      <div class="absolute -right-4 -top-4 text-error/10 group-hover:scale-110 transition-transform duration-500">
-         <lucide-icon [img]="DollarSign" [size]="100"></lucide-icon>
-      </div>
-      <div class="relative z-10">
-        <div class="flex items-center gap-2 text-error mb-2 font-bold text-xs uppercase tracking-widest">
-           <lucide-icon [img]="ArrowDownLeft" [size]="14"></lucide-icon>
-           إجمالي المصروفات
+     <!-- Income Card -->
+     <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div class="flex justify-between items-start">
+           <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">إجمالي الإيرادات / Total Income</p>
+              <h2 class="text-2xl font-black text-slate-800 dark:text-white mt-1">{{ summary()?.totalIncome | number }}</h2>
+           </div>
+           <div class="h-10 w-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
+              <lucide-icon [img]="TrendingUp" [size]="20"></lucide-icon>
+           </div>
         </div>
-        <div class="text-3xl font-black text-slate-900 dark:text-white">{{ stats().totalExpenses | number }} <span class="text-xs font-normal text-slate-400">ر.س</span></div>
-      </div>
-    </div>
+        <div class="mt-4 flex items-center justify-between text-[11px]">
+           <span class="text-slate-400">هذا الشهر: <span class="text-success font-bold">+{{ summary()?.monthlyIncome | number }}</span></span>
+           <div class="flex items-center text-success gap-1">
+              <lucide-icon [img]="ArrowUpRight" [size]="12"></lucide-icon>
+              <span>12.5%</span>
+           </div>
+        </div>
+     </div>
 
-    <!-- Balance Card -->
-    <div class="bg-primary p-6 rounded-2xl border border-transparent shadow-lg shadow-primary/20 relative overflow-hidden group">
-      <div class="absolute -right-4 -top-4 text-white/10 group-hover:scale-110 transition-transform duration-500">
-         <lucide-icon [img]="DollarSign" [size]="100"></lucide-icon>
-      </div>
-      <div class="relative z-10 text-white">
-        <div class="flex items-center gap-2 text-white/80 mb-2 font-bold text-xs uppercase tracking-widest">
-           صافي الربح / Balance
+     <!-- Expense Card -->
+     <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div class="flex justify-between items-start">
+           <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">إجمالي المصروفات / Total Expense</p>
+              <h2 class="text-2xl font-black text-slate-800 dark:text-white mt-1">{{ summary()?.totalExpense | number }}</h2>
+           </div>
+           <div class="h-10 w-10 rounded-xl bg-error/10 text-error flex items-center justify-center">
+              <lucide-icon [img]="TrendingDown" [size]="20"></lucide-icon>
+           </div>
         </div>
-        <div class="text-3xl font-black">{{ stats().netProfit | number }} <span class="text-xs font-normal opacity-60">ر.س</span></div>
-      </div>
-    </div>
-
-    <!-- Invoices Card -->
-    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-      <div class="relative z-10">
-        <div class="flex items-center gap-2 text-warning mb-2 font-bold text-xs uppercase tracking-widest">
-           فواتير معلقة
+        <div class="mt-4 flex items-center justify-between text-[11px]">
+           <span class="text-slate-400">هذا الشهر: <span class="text-error font-bold">-{{ summary()?.monthlyExpense | number }}</span></span>
+           <div class="flex items-center text-error gap-1">
+              <lucide-icon [img]="ArrowDownRight" [size]="12"></lucide-icon>
+              <span>5.2%</span>
+           </div>
         </div>
-        <div class="text-3xl font-black text-slate-900 dark:text-white">{{ stats().pendingInvoices }} <span class="text-xs font-normal text-slate-400">فاتورة</span></div>
-      </div>
-    </div>
+     </div>
   </div>
 
-  <!-- Transactions Table Section -->
-  <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex-1 flex flex-col overflow-hidden">
+  <!-- Search and Table -->
+  <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm flex-1 flex flex-col">
     <!-- Filters Header -->
-    <div class="p-6 border-b border-slate-50 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
-       <h2 class="text-lg font-bold text-slate-800 dark:text-white">أحدث العمليات المالية</h2>
-       
-       <div class="flex gap-3">
-          <div class="relative flex-1 md:w-64">
-            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-              <lucide-icon [img]="Search" [size]="16"></lucide-icon>
-            </div>
-            <input type="text" [ngModel]="searchQuery()" (input)="onSearchChange($event)" placeholder="بحث بالوصف..." 
-              class="w-full text-xs rounded-xl border-0 py-2.5 pr-10 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700">
-          </div>
-          
-          <button class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2">
-             <lucide-icon [img]="Filter" [size]="14"></lucide-icon>
-             تصفية
+    <div class="p-4 border-b border-slate-50 dark:border-slate-700/50 flex flex-col md:flex-row gap-4 items-center justify-between">
+       <div class="relative w-full max-w-md">
+         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+           <lucide-icon [img]="Search" [size]="18"></lucide-icon>
+         </div>
+         <input type="text" 
+                [ngModel]="searchQuery()"
+                (input)="onSearchChange($event)"
+                placeholder="بحث في الحركات، الوصف، أو الفئة... / Search..." 
+                class="block w-full text-sm rounded-lg border-0 py-2.5 pl-4 pr-10 text-slate-900 dark:text-slate-100 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 bg-slate-50 dark:bg-slate-900/50 focus:ring-2 focus:ring-primary transition-all duration-200">
+       </div>
+
+       <div class="flex items-center gap-3">
+          <button class="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg text-slate-400 border border-slate-100 dark:border-slate-700">
+             <lucide-icon [img]="Calendar" [size]="18"></lucide-icon>
+          </button>
+          <button class="text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 px-4 py-2 rounded-lg border border-slate-100 dark:border-slate-700">
+             تصدير التقرير (Excel)
           </button>
        </div>
     </div>
 
     <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm text-right rtl:text-right text-slate-500 dark:text-slate-400">
-        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50/50 dark:bg-slate-900/30 border-b border-slate-50 dark:border-slate-800 font-black">
+    <div class="overflow-x-auto flex-1">
+      <table class="w-full text-sm text-right">
+        <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/50 dark:bg-slate-900/30 border-b border-slate-50 dark:border-slate-700/50">
           <tr>
-            <th scope="col" class="px-6 py-4">العملية / Description</th>
-            <th scope="col" class="px-6 py-4">التصنيف / Category</th>
-            <th scope="col" class="px-6 py-4">التاريخ / Date</th>
-            <th scope="col" class="px-6 py-4">الحالة / Status</th>
-            <th scope="col" class="px-6 py-4 text-left">المبلغ / Amount</th>
-            <th scope="col" class="px-6 py-4 text-center"></th>
+            <th class="px-6 py-4">البيان / Description</th>
+            <th class="px-6 py-4">الفئة / Category</th>
+            <th class="px-6 py-4">التاريخ / Date</th>
+            <th class="px-6 py-4 text-left">المبلغ / Amount</th>
+            <th class="px-6 py-4 text-center">الإجراءات</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
-          <tr *ngFor="let t of filteredTransactions()" class="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition">
-            <td class="px-6 py-5">
-              <div class="flex items-center gap-3">
-                <div [class]="'h-10 w-10 rounded-xl flex items-center justify-center ' + getTypeClass(t.type)">
-                   <lucide-icon *ngIf="t.type === 'INCOME'" [img]="ArrowUpRight" [size]="18"></lucide-icon>
-                   <lucide-icon *ngIf="t.type === 'EXPENSE'" [img]="ArrowDownLeft" [size]="18"></lucide-icon>
-                </div>
-                <div>
-                  <div class="font-bold text-slate-800 dark:text-white">{{ t.description }}</div>
-                  <div class="text-[10px] font-mono text-slate-400">TRX-{{ t.id }}</div>
-                </div>
+        <tbody class="divide-y divide-slate-50 dark:divide-slate-700">
+          <tr *ngFor="let t of filteredTransactions()" class="hover:bg-slate-50/30 dark:hover:bg-slate-700/20 transition-colors group">
+            <td class="px-6 py-4 flex items-center gap-3">
+              <div [class]="'h-10 w-10 rounded-full flex items-center justify-center ' + (t.type === 'INCOME' ? 'bg-success/5 text-success' : 'bg-error/5 text-error')">
+                 <lucide-icon [img]="t.type === 'INCOME' ? TrendingUp : TrendingDown" [size]="18"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                 <span class="font-bold text-slate-800 dark:text-white">{{ t.description }}</span>
+                 <span class="text-[10px] text-slate-400" *ngIf="t.project">{{ t.project.name }}</span>
               </div>
             </td>
-            <td class="px-6 py-5">
-              <span class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
-                {{ t.category }}
-              </span>
+            <td class="px-6 py-4">
+              <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded text-slate-500">{{ t.category }}</span>
             </td>
-            <td class="px-6 py-5">
-               <div class="flex items-center gap-2 text-xs">
-                  <lucide-icon [img]="Calendar" [size]="12" class="text-slate-400"></lucide-icon>
-                  {{ t.date | date:'MMM d, y' }}
+            <td class="px-6 py-4 text-xs text-slate-500">
+               {{ t.date | date:'MMM d, y | HH:mm' }}
+            </td>
+            <td class="px-6 py-4 text-left font-mono font-black" [class]="t.type === 'INCOME' ? 'text-success' : 'text-error'">
+               {{ t.type === 'INCOME' ? '+' : '-' }}{{ t.amount | number }} <span class="text-[8px] font-bold">ر.س</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+               <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button (click)="openTransactionForm(t)" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                     <lucide-icon [img]="FileText" [size]="16"></lucide-icon>
+                  </button>
+                  <button class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                     <lucide-icon [img]="MoreVertical" [size]="16"></lucide-icon>
+                  </button>
                </div>
-            </td>
-            <td class="px-6 py-5">
-               <span class="inline-flex items-center gap-1 text-[10px] font-bold text-success uppercase">
-                  <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-                  Completed
-               </span>
-            </td>
-            <td [class]="'px-6 py-5 text-left font-black text-lg ' + (t.type === 'INCOME' ? 'text-success' : 'text-slate-800 dark:text-white')">
-               {{ t.type === 'EXPENSE' ? '-' : '+' }}{{ t.amount | number }} <span class="text-xs font-normal text-slate-400">ر.س</span>
-            </td>
-            <td class="px-6 py-5 text-center">
-               <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
-                  <lucide-icon [img]="MoreVertical" [size]="18"></lucide-icon>
-               </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Footer -->
-    <div class="px-6 py-4 bg-slate-50/30 dark:bg-slate-900/10 border-t border-slate-50 dark:border-slate-800 flex justify-between items-center text-[10px] text-slate-400">
-       <div>آخر تحديث: منذ 5 دقائق</div>
-       <button class="font-bold text-primary hover:text-primary-light uppercase tracking-widest">تصدير كـ PDF</button>
+    <!-- Empty State -->
+    <div *ngIf="!isLoading() && transactions().length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400">
+      <lucide-icon [img]="Wallet" [size]="48" class="mb-4 opacity-10"></lucide-icon>
+      <p>لا توجد حركات مالية مسجلة.</p>
     </div>
   </div>
 </div>

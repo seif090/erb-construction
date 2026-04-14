@@ -1,23 +1,24 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UnitService, Unit } from '../../../../core/services/unit.service';
+import { UnitFormComponent } from '../unit-form/unit-form.component';
 import { LucideAngularModule, Search, Building, MapPin, Bed, Bath, Move, MoreVertical, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-units-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, MatDialogModule],
   templateUrl: './units-list.component.html',
   styleUrl: './units-list.component.scss'
 })
 export class UnitsListComponent implements OnInit {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/units`;
+  private unitService = inject(UnitService);
+  private dialog = inject(MatDialog);
 
-  units = signal<any[]>([]);
-  filteredUnits = signal<any[]>([]);
+  units = signal<Unit[]>([]);
+  filteredUnits = signal<Unit[]>([]);
   isLoading = signal(true);
   searchQuery = signal('');
 
@@ -36,7 +37,7 @@ export class UnitsListComponent implements OnInit {
 
   fetchUnits() {
     this.isLoading.set(true);
-    this.http.get<any>(this.apiUrl).subscribe({
+    this.unitService.getUnits().subscribe({
       next: (res) => {
         if (res.success) {
           this.units.set(res.data);
@@ -47,46 +48,51 @@ export class UnitsListComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching units:', err);
         // Fallback mock data
-        const mockData = [
+        const mockData: Unit[] = [
           { 
             id: '1', 
-            title: 'شقة فاخرة في الياسمين', 
+            name: 'شقة فاخرة في الياسمين', 
             type: 'APARTMENT', 
             price: 4500000, 
             area: 180, 
-            bedrooms: 3, 
-            bathrooms: 2, 
+            rooms: 3, 
+            baths: 2, 
             status: 'AVAILABLE', 
-            city: 'القاهرة', 
-            district: 'التجمع الخامس' 
+            location: 'القاهرة، التجمع الخامس',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           { 
             id: '2', 
-            title: 'فيلا مودرن مع مسبح', 
+            name: 'فيلا مودرن مع مسبح', 
             type: 'VILLA', 
             price: 12000000, 
             area: 450, 
-            bedrooms: 5, 
-            bathrooms: 4, 
+            rooms: 5, 
+            baths: 4, 
             status: 'RESERVED', 
-            city: 'الرياض', 
-            district: 'حي الملقا' 
-          },
-          { 
-            id: '3', 
-            title: 'محل تجاري للايجار', 
-            type: 'SHOP', 
-            price: 850000, 
-            rentPrice: 5000,
-            area: 55, 
-            status: 'AVAILABLE', 
-            city: 'جدة', 
-            district: 'حي الشاطئ' 
+            location: 'الرياض، حي الملقا',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
         ];
         this.units.set(mockData);
         this.applyFilter();
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  openUnitForm(unit?: Unit) {
+    const dialogRef = this.dialog.open(UnitFormComponent, {
+      width: '700px',
+      data: { unit },
+      panelClass: 'glass-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fetchUnits();
       }
     });
   }
@@ -98,9 +104,8 @@ export class UnitsListComponent implements OnInit {
       return;
     }
     const filtered = this.units().filter(u => 
-      u.title.toLowerCase().includes(query) || 
-      u.city.toLowerCase().includes(query) ||
-      u.district.toLowerCase().includes(query)
+      u.name.toLowerCase().includes(query) || 
+      u.location?.toLowerCase().includes(query)
     );
     this.filteredUnits.set(filtered);
   }
@@ -134,8 +139,9 @@ export class UnitsListComponent implements OnInit {
     switch (type) {
       case 'APARTMENT': return 'شقة';
       case 'VILLA': return 'فيلا';
-      case 'SHOP': return 'محل';
+      case 'STUDIO': return 'استوديو';
       case 'OFFICE': return 'مكتب';
+      case 'LAND': return 'أرض';
       default: return type;
     }
   }

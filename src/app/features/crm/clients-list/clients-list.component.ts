@@ -1,23 +1,24 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ClientService, Client } from '../../../../core/services/client.service';
+import { ClientFormComponent } from '../client-form/client-form.component';
 import { LucideAngularModule, Search, UserPlus, Filter, MoreVertical, Mail, Phone, MapPin, Star } from 'lucide-angular';
 
 @Component({
   selector: 'app-clients-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, MatDialogModule],
   templateUrl: './clients-list.component.html',
   styleUrl: './clients-list.component.scss'
 })
 export class ClientsListComponent implements OnInit {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/clients`;
+  private clientService = inject(ClientService);
+  private dialog = inject(MatDialog);
 
-  clients = signal<any[]>([]);
-  filteredClients = signal<any[]>([]);
+  clients = signal<Client[]>([]);
+  filteredClients = signal<Client[]>([]);
   isLoading = signal(true);
   searchQuery = signal('');
 
@@ -36,7 +37,7 @@ export class ClientsListComponent implements OnInit {
 
   fetchClients() {
     this.isLoading.set(true);
-    this.http.get<any>(this.apiUrl).subscribe({
+    this.clientService.getClients().subscribe({
       next: (res) => {
         if (res.success) {
           this.clients.set(res.data);
@@ -46,16 +47,30 @@ export class ClientsListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching clients:', err);
-        // Fallback mock data for visual assessment
-        const mockData = [
-          { id: '1', name: 'أحمد علي', email: 'ahmed@example.com', phone: '0123456789', pipeline: 'CLOSED', totalValue: 150000, rating: 5, address: 'القاهرة' },
-          { id: '2', name: 'محمد حسن', email: 'mohammad@example.com', phone: '0112233445', pipeline: 'NEGOTIATION', totalValue: 85000, rating: 4, address: 'الرياض' },
-          { id: '3', name: 'سارة محمود', email: 'sara@example.com', phone: '0101010101', pipeline: 'LEAD', totalValue: 0, rating: 3, address: 'دبي' },
-          { id: '4', name: 'ياسين كريم', email: 'yassin@example.com', phone: '0151515151', pipeline: 'PROPOSAL', totalValue: 45000, rating: 4, address: 'جدة' },
+        // Fallback mock data for visual assessment until DB is live
+        const mockData: Client[] = [
+          { id: '1', name: 'أحمد علي', email: 'ahmed@example.com', phone: '0123456789', pipeline: 'CLOSED', totalValue: 150000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '2', name: 'محمد حسن', email: 'mohammad@example.com', phone: '0112233445', pipeline: 'NEGOTIATION', totalValue: 85000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '3', name: 'سارة محمود', email: 'sara@example.com', phone: '0101010101', pipeline: 'LEAD', totalValue: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: '4', name: 'ياسين كريم', email: 'yassin@example.com', phone: '0151515151', pipeline: 'PROPOSAL', totalValue: 45000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
         ];
         this.clients.set(mockData);
         this.applyFilter();
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  openClientForm(client?: Client) {
+    const dialogRef = this.dialog.open(ClientFormComponent, {
+      width: '600px',
+      data: { client },
+      panelClass: 'glass-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fetchClients();
       }
     });
   }

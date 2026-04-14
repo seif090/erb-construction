@@ -8,7 +8,7 @@
     </div>
     
     <div class="flex gap-3">
-      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+      <button (click)="openContractorForm()" class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
         <lucide-icon [img]="Plus" [size]="16"></lucide-icon>
         إضافة مقاول
       </button>
@@ -55,18 +55,18 @@
                <lucide-icon [img]="HardHat" [size]="32"></lucide-icon>
             </div>
             <div>
-               <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ contractor.name }}</h3>
+               <h3 (click)="openContractorForm(contractor)" class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors cursor-pointer">{{ contractor.name }}</h3>
                <div class="flex items-center gap-2 mt-1">
                   <span class="text-xs text-primary font-bold bg-primary/5 px-2 py-0.5 rounded border border-primary/10">
-                    {{ getTradeLabel(contractor.trade) }}
+                    {{ getTradeLabel(contractor.specialty) }}
                   </span>
-                  <span [class]="'px-2 py-0.5 rounded text-[10px] font-bold uppercase ' + getStatusClass(contractor.status)">
-                    {{ getStatusLabel(contractor.status) }}
+                  <span [class]="'px-2 py-0.5 rounded text-[10px] font-bold uppercase ' + getStatusClass(contractor.isActive)">
+                    {{ getStatusLabel(contractor.isActive) }}
                   </span>
                </div>
             </div>
          </div>
-         <button class="p-2 rounded-xl text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+         <button (click)="openContractorForm(contractor)" class="p-2 rounded-xl text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
             <lucide-icon [img]="MoreVertical" [size]="20"></lucide-icon>
          </button>
       </div>
@@ -75,7 +75,7 @@
       <div class="mt-6 space-y-3">
          <div class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
             <lucide-icon [img]="Briefcase" [size]="16" class="text-slate-400"></lucide-icon>
-            <span>{{ contractor.company || 'فردي / Freelance' }}</span>
+            <span>{{ contractor.address || 'فردي / Freelance' }}</span>
          </div>
          <div class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
             <lucide-icon [img]="Phone" [size]="16" class="text-slate-400"></lucide-icon>
@@ -94,7 +94,7 @@
             <lucide-icon [img]="Star" [size]="14" class="text-slate-200 dark:text-slate-700" *ngFor="let i of [1,2,3,4,5].slice(contractor.rating)"></lucide-icon>
             <span class="text-xs font-bold text-slate-400 ml-1">({{ contractor.rating }}.0)</span>
          </div>
-         <button class="text-xs font-bold text-primary hover:text-primary-light flex items-center gap-1 transition-all group-hover:gap-2">
+         <button (click)="openContractorForm(contractor)" class="text-xs font-bold text-primary hover:text-primary-light flex items-center gap-1 transition-all group-hover:gap-2">
             عرض الملف الشخصي
             <span class="rtl:rotate-180">→</span>
          </button>

@@ -2,17 +2,18 @@
   
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">المخازن والتوريدات / Inventory</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">إدارة مستويات المخزون، الطلبيات، وتنبيهات النقص</p>
+    <div class="flex items-center gap-4">
+      <div class="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+        <lucide-icon [img]="Package" [size]="24"></lucide-icon>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-white">المخازن والتوريدات / Inventory</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">تتبع المواد الخام، التوريدات، وحركة المخزون</p>
+      </div>
     </div>
     
     <div class="flex gap-3">
-      <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm flex items-center gap-2">
-        <lucide-icon [img]="ArrowUpDown" [size]="16"></lucide-icon>
-        حركة المخزن
-      </button>
-      <button class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
+      <button (click)="openItemForm()" class="bg-primary text-white border border-transparent px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition shadow-sm flex items-center gap-2">
         <lucide-icon [img]="Plus" [size]="16"></lucide-icon>
         إضافة صنف
       </button>
@@ -20,97 +21,94 @@
   </div>
 
   <!-- Stats Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-      <p class="text-[10px] text-slate-400 font-bold uppercase">إجمالي الأصناف</p>
-      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">{{ items().length }}</p>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div class="text-[10px] font-bold text-slate-400 uppercase">إجمالي الأصناف</div>
+        <div class="text-xl font-black text-slate-800 dark:text-white mt-1">{{ items().length }}</div>
+     </div>
+     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div class="text-[10px] font-bold text-slate-400 uppercase">تنبيهات النقص</div>
+        <div class="text-xl font-black text-red-500 mt-1">
+           {{ items().filter(isLowStock).length }}
+        </div>
+     </div>
+  </div>
+
+  <!-- Search and Actions -->
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+    <div class="relative w-full max-w-md">
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+        <lucide-icon [img]="Search" [size]="18"></lucide-icon>
+      </div>
+      <input type="text" 
+             [ngModel]="searchQuery()"
+             (input)="onSearchChange($event)"
+             placeholder="بحث بالاسم، التصنيف، أو الكود... / Search..." 
+             class="block w-full text-sm rounded-lg border-0 py-2.5 pl-4 pr-10 text-slate-900 dark:text-slate-100 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 bg-slate-50 dark:bg-slate-900/50 shadow-inner focus:ring-2 focus:ring-inset focus:ring-primary transition-all duration-200">
     </div>
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm border-r-4 border-r-error">
-      <p class="text-[10px] text-error font-bold uppercase">تنبيهات نقص المخزون</p>
-      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">2 صنف</p>
-    </div>
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-      <p class="text-[10px] text-slate-400 font-bold uppercase">قيمة المخزون</p>
-      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">450,000 <span class="text-xs">ر.س</span></p>
-    </div>
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-      <p class="text-[10px] text-slate-400 font-bold uppercase">طلبيات توريد نشطة</p>
-      <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">5</p>
+
+    <div class="flex items-center gap-2">
+       <button class="p-2 text-slate-400 hover:text-primary transition-colors">
+          <lucide-icon [img]="ArrowUpDown" [size]="18"></lucide-icon>
+       </button>
+       <select class="text-xs bg-slate-50 dark:bg-slate-900 border-0 rounded-lg px-3 py-2 ring-1 ring-slate-200 dark:ring-slate-700 outline-none focus:ring-primary">
+          <option>جميع التصنيفات</option>
+          <option>مواد بناء</option>
+          <option>دهانات</option>
+          <option>كهرباء</option>
+       </select>
     </div>
   </div>
 
-  <!-- Search and Table -->
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-md">
-    <div class="p-4 border-b border-slate-100 dark:border-slate-700">
-      <div class="relative w-full max-w-md">
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-          <lucide-icon [img]="Search" [size]="18"></lucide-icon>
-        </div>
-        <input type="text" 
-               [ngModel]="searchQuery()"
-               (input)="onSearchChange($event)"
-               placeholder="بحث بالاسم أو التصنيف... / Search..." 
-               class="block w-full text-sm rounded-lg border-0 py-2 pl-4 pr-10 text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-inset ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary">
-      </div>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="flex items-center justify-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
 
+  <!-- Inventory Table -->
+  <div *ngIf="!isLoading()" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm flex-1">
     <div class="overflow-x-auto">
-      <table class="w-full text-sm text-right rtl:text-right text-slate-500 dark:text-slate-400 border-collapse">
-        <thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-900/50 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
+      <table class="w-full text-sm text-right text-slate-500 dark:text-slate-400">
+        <thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-900/50 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">
           <tr>
-            <th scope="col" class="px-6 py-4">الصنف / Item</th>
-            <th scope="col" class="px-6 py-4">التصنيف / Category</th>
-            <th scope="col" class="px-6 py-4">الكمية المتاحة / Qty</th>
-            <th scope="col" class="px-6 py-4">سعر الوحدة / Price</th>
-            <th scope="col" class="px-6 py-4">الموقع / Location</th>
-            <th scope="col" class="px-6 py-4 text-center">الإجراءات</th>
+            <th class="px-6 py-4">الصنف / Item</th>
+            <th class="px-6 py-4">التصنيف / Category</th>
+            <th class="px-6 py-4 text-center">الكمية / Qty</th>
+            <th class="px-6 py-4">الوحدة / Unit</th>
+            <th class="px-6 py-4 text-left">التكلفة / Cost</th>
+            <th class="px-6 py-4 text-center">الإجراءات</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-          <tr *ngIf="isLoading()" class="animate-pulse">
-            <td colspan="6" class="px-6 py-10 text-center text-slate-400">جاري التحميل...</td>
-          </tr>
-          
-          <tr *ngFor="let item of filteredItems()" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-500 flex items-center justify-center">
-                  <lucide-icon [img]="Package" [size]="20"></lucide-icon>
-                </div>
-                <div>
-                  <div class="font-bold text-slate-900 dark:text-white">{{ item.name }}</div>
-                  <div *ngIf="isLowStock(item)" class="flex items-center gap-1 text-[10px] text-error font-bold mt-0.5 animate-pulse">
-                    <lucide-icon [img]="AlertTriangle" [size]="10"></lucide-icon>
-                    تنبيه: مخزون منخفض
-                  </div>
-                </div>
+        <tbody class="divide-y divide-slate-50 dark:divide-slate-700">
+          <tr *ngFor="let item of filteredItems()" class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors group">
+            <td class="px-6 py-4 flex items-center gap-3">
+              <div class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+                 <lucide-icon [img]="Box" [size]="16"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                 <span (click)="openItemForm(item)" class="font-bold text-slate-900 dark:text-white cursor-pointer hover:text-primary transition-colors">{{ item.name }}</span>
+                 <span class="text-[10px] text-slate-400 font-mono">{{ item.sku || 'NO-SKU' }}</span>
               </div>
             </td>
             <td class="px-6 py-4">
-              <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-[10px] font-bold text-slate-600 dark:text-slate-400">
-                {{ item.category }}
+              <span class="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-900 text-[10px] font-bold text-slate-500">
+                 {{ item.category }}
               </span>
             </td>
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-2">
-                <span [class]="'text-sm font-bold ' + (isLowStock(item) ? 'text-error' : 'text-slate-800 dark:text-white')">
+            <td class="px-6 py-4 text-center font-bold" [class.text-red-500]="isLowStock(item)">
+               <div class="flex items-center justify-center gap-2">
                   {{ item.quantity }}
-                </span>
-                <span class="text-xs text-slate-400">{{ getUnitLabel(item.unit) }}</span>
-              </div>
-              <div class="w-24 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full mt-1 overflow-hidden">
-                <div [class]="'h-full transition-all ' + (isLowStock(item) ? 'bg-error' : 'bg-success')" 
-                     [style.width.%]="(item.quantity / (item.minQuantity * 2)) * 100"></div>
-              </div>
+                  <lucide-icon *ngIf="isLowStock(item)" [img]="AlertTriangle" [size]="14" class="text-red-500 animate-pulse"></lucide-icon>
+               </div>
             </td>
-            <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">
-              {{ item.unitPrice | number:'1.0-0' }} <span class="text-[10px] font-normal text-slate-400">ر.س</span>
+            <td class="px-6 py-4 italic text-xs">
+               {{ getUnitLabel(item.unit) }}
             </td>
-            <td class="px-6 py-4 italic text-slate-500 text-xs">
-              {{ item.location }}
+            <td class="px-6 py-4 text-left font-mono text-slate-700 dark:text-slate-300">
+               {{ item.unitCost | number }} <span class="text-[8px]">ر.س</span>
             </td>
             <td class="px-6 py-4 text-center">
-              <button class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+              <button (click)="openItemForm(item)" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                 <lucide-icon [img]="MoreVertical" [size]="18"></lucide-icon>
               </button>
             </td>
@@ -118,5 +116,11 @@
         </tbody>
       </table>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading() && items().length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400">
+    <lucide-icon [img]="Package" [size]="48" class="mb-4 opacity-10"></lucide-icon>
+    <p>المخزن فارغ حالياً.</p>
   </div>
 </div>

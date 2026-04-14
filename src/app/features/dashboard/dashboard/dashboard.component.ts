@@ -1,96 +1,76 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { LucideAngularModule, Users, Folder, Building, TrendingUp, ArrowUpRight, ArrowDownRight, Clock, CheckCircle2, UserPlus } from 'lucide-angular';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { LucideAngularModule, TrendingUp, Users, Building2, HardHat, FileText, PiggyBank } from 'lucide-angular';
+import { DashboardService, DashboardKPIs } from '../../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, BaseChartDirective],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/dashboard`;
+  private dashboardService = inject(DashboardService);
+  
+  isLoading = signal(true);
+  stats = signal<DashboardKPIs | null>(null);
 
-  stats: any = null;
-  isLoading = true;
-  error = '';
-
-  readonly TrendingUp = TrendingUp;
   readonly Users = Users;
-  readonly Building2 = Building2;
-  readonly HardHat = HardHat;
-  readonly FileText = FileText;
-  readonly PiggyBank = PiggyBank;
+  readonly Folder = Folder;
+  readonly Building = Building;
+  readonly TrendingUp = TrendingUp;
+  readonly ArrowUpRight = ArrowUpRight;
+  readonly ArrowDownRight = ArrowDownRight;
+  readonly Clock = Clock;
+  readonly CheckCircle2 = CheckCircle2;
+  readonly UserPlus = UserPlus;
 
-  // Revenue Chart Configuration (Dummy Data until API loads)
-  public lineChartData: ChartConfiguration['data'] = {
-    datasets: [
-      {
-        data: [65000, 59000, 80000, 81000, 56000, 55000, 40000],
-        label: 'الإيرادات / Revenue',
-        backgroundColor: 'rgba(30, 58, 95, 0.2)',
-        borderColor: '#1E3A5F',
-        pointBackgroundColor: '#C9A84C',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#C9A84C',
-        fill: 'origin',
-      }
-    ],
-    labels: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July' ]
+  // Chart configurations handled by a helper method to avoid clutter
+  public barChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } }
   };
 
-  public lineChartOptions: ChartConfiguration['options'] = {
-    elements: {
-      line: { tension: 0.5 }
-    },
-    scales: {
-      y: { position: 'left' }
-    },
-    plugins: {
-      legend: { display: true }
-    }
+  public barChartData: ChartData<'bar'> = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{ data: [65, 59, 80, 81, 56, 55], label: 'Revenue', backgroundColor: '#1E3A5F', borderRadius: 8 }]
   };
-  public lineChartType: ChartType = 'line';
 
-  // Projects Status Chart
-  public pieChartData: ChartData<'pie', number[], string | string[]> = {
-    labels: [['Pending'], ['In Progress'], ['Completed']],
-    datasets: [{
-      data: [300, 500, 100],
-      backgroundColor: ['#F59E0B', '#1E3A5F', '#10B981']
-    }]
-  };
-  public pieChartType: ChartType = 'pie';
+  ngOnInit() {
+    this.loadDashboardData();
+  }
 
-  ngOnInit(): void {
-    // Attempting to fetch stats from API if backend is running
-    this.http.get<any>(`${this.apiUrl}/stats`).subscribe({
+  loadDashboardData() {
+    this.isLoading.set(true);
+    this.dashboardService.getKPIs().subscribe({
       next: (res) => {
         if (res.success) {
-          this.stats = res.data;
-          // Dynamically update charts if the backend returns array structures
+          this.stats.set(res.data);
+          // Here you would also update chart data from actual API results
         }
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Error loading dashboard stats:', err);
-        // Fallback dummy data for visual testing if API fails
-        this.stats = {
-          totalClients: 45,
-          activeProjects: 12,
-          availableUnits: 8,
-          totalContractors: 24,
-          monthlyRevenue: 125000,
-          pendingContracts: 3
-        };
-        this.isLoading = false;
+        // Fallback mock data for visual presentation
+        this.stats.set({
+          projects: { total: 12, active: 8, completed: 4 },
+          clients: { total: 45, newThisMonth: 5 },
+          units: { total: 24, available: 6, occupancyRate: 75 },
+          financial: {
+            totalIncome: 1250000,
+            totalExpense: 450000,
+            netProfit: 800000,
+            incomeThisMonth: 120000,
+            expenseThisMonth: 35000
+          }
+        });
+        this.isLoading.set(false);
       }
     });
   }

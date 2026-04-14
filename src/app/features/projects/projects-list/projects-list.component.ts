@@ -1,23 +1,24 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ProjectService, Project } from '../../../../core/services/project.service';
+import { ProjectFormComponent } from '../project-form/project-form.component';
 import { LucideAngularModule, Search, FolderPlus, MapPin, Calendar, Clock, MoreVertical, TrendingUp, CheckCircle2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-projects-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, MatDialogModule],
   templateUrl: './projects-list.component.html',
   styleUrl: './projects-list.component.scss'
 })
 export class ProjectsListComponent implements OnInit {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/projects`;
+  private projectService = inject(ProjectService);
+  private dialog = inject(MatDialog);
 
-  projects = signal<any[]>([]);
-  filteredProjects = signal<any[]>([]);
+  projects = signal<Project[]>([]);
+  filteredProjects = signal<Project[]>([]);
   isLoading = signal(true);
   searchQuery = signal('');
 
@@ -36,7 +37,7 @@ export class ProjectsListComponent implements OnInit {
 
   fetchProjects() {
     this.isLoading.set(true);
-    this.http.get<any>(this.apiUrl).subscribe({
+    this.projectService.getProjects().subscribe({
       next: (res) => {
         if (res.success) {
           this.projects.set(res.data);
@@ -47,44 +48,51 @@ export class ProjectsListComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching projects:', err);
         // Fallback mock data
-        const mockData = [
+        const mockData: Project[] = [
           { 
             id: '1', 
             name: 'تشطيب فيلا الياسمين', 
-            clientName: 'أحمد علي', 
             budget: 250000, 
             spent: 120000, 
             status: 'IN_PROGRESS', 
-            progress: 45, 
             location: 'التجمع الخامس، القاهرة',
-            startDate: '2023-10-01'
+            startDate: '2023-10-01',
+            clientId: '1',
+            client: { name: 'أحمد علي' },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           { 
             id: '2', 
             name: 'ديكور شقة الرحاب', 
-            clientName: 'محمد حسن', 
             budget: 120000, 
             spent: 120000, 
             status: 'COMPLETED', 
-            progress: 100, 
             location: 'الرحاب، القاهرة',
-            startDate: '2023-08-15'
-          },
-          { 
-            id: '3', 
-            name: 'عمارة المهندسين', 
-            clientName: 'سارة محمود', 
-            budget: 1500000, 
-            spent: 0, 
-            status: 'PENDING', 
-            progress: 0, 
-            location: 'المهندسين، الجيزة',
-            startDate: '2024-01-10'
+            startDate: '2023-08-15',
+            clientId: '2',
+            client: { name: 'محمد حسن' },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
         ];
         this.projects.set(mockData);
         this.applyFilter();
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  openProjectForm(project?: Project) {
+    const dialogRef = this.dialog.open(ProjectFormComponent, {
+      width: '700px',
+      data: { project },
+      panelClass: 'glass-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fetchProjects();
       }
     });
   }
@@ -97,7 +105,7 @@ export class ProjectsListComponent implements OnInit {
     }
     const filtered = this.projects().filter(p => 
       p.name.toLowerCase().includes(query) || 
-      p.clientName?.toLowerCase().includes(query) ||
+      p.client?.name?.toLowerCase().includes(query) ||
       p.location?.toLowerCase().includes(query)
     );
     this.filteredProjects.set(filtered);
@@ -128,5 +136,9 @@ export class ProjectsListComponent implements OnInit {
       case 'CANCELLED': return 'ملغي';
       default: return status;
     }
+  }
+
+  getProgress(p: Project): number {
+    return (p.spent / p.budget) * 100;
   }
 }
